@@ -14,6 +14,7 @@ cutdir["Dress2j1b"]="TDressNJets == 2 && TDressNBJets == 1 "
 cutdir["DressSR"] = "TPassDress == 1"
 cutdir["1j1b"]    = "TNJets == 1  && TNBJets == 1"
 cutdir["njets"]   = "(1)"
+cutdir["Dressnjets"]   = "(1)"
 
 #systlist          = vl.GiveMeTheExpNamesWOJER(vl.varList["Names"]["ExpSysts"])
 systlist          = ""
@@ -47,7 +48,7 @@ folderdir["njets"] = "./results/MCData/"
 folderdir["DressSR"] = "./results/MCData/"
 folderdir["DressCR"] = "./results/MCData/control/"
 folderdir["Dress2j1b"] = "./results/MCData/2j1b/"
-folderdir["njets"] = "./results/MCData/"
+folderdir["Dressnjets"] = "./results/MCData/"
 
 #legtxtsize  = 0.028
 legtxtsize  = 0.055

@@ -10,10 +10,10 @@ minitrees="MiniTrees"
 indstr="index.php"
 indexpath="/nfs/fanae/user/vrbouza/www/index.php"
 
-sourcepath=""
+savepath=""
 storagepath="/pool/cienciasrw/userstorage/vrbouza/proyectos/TW_inclusivo_run2/"
 webpath="/nfs/fanae/user/vrbouza/www/Proyectos/tw_inclusivo_run2/results/"
-savepath="../../temp_TW/"
+sourcepath="../../temp_TW/*"
 
 if [ "$1" == "w" ] || [ "$1" == "web" ]; then
   echo "===> Copying results to the web!"
@@ -58,6 +58,10 @@ elif [ "$1" == "r" ] || [ "$1" == "results" ]; then
   echo " "
   echo "Done!"
   return
+elif [ "$1" != "" ]; then
+  savefolder=$1
+  savepath=$storagepath$savefolder
+
 else
   d=$(date +%d)
   m=$(date +%m)
