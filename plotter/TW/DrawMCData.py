@@ -13,9 +13,7 @@ cutdir["2j1b"]    = "TNJets == 2  && TNBJets == 1"
 cutdir["Dress2j1b"]="TDressNJets == 2 && TDressNBJets == 1 "
 cutdir["DressSR"] = "TPassDress == 1"
 cutdir["1j1b"]    = "TNJets == 1  && TNBJets == 1"
-#StandardCut       = "TPassReco == 1";
-#ControlCut        = "TNJets == 1  && TNBtags == 1 && TNLooseCentral > 1";
-#StandardDressCut  = "TPassDress == 1";
+cutdir["njets"]   = "(1)"
 
 #systlist          = vl.GiveMeTheExpNamesWOJER(vl.varList["Names"]["ExpSysts"])
 systlist          = ""
@@ -27,10 +25,12 @@ labeldir["SR"]      = "+1j1b"
 labeldir["CR"]      = "+1j1b+>0j_{loose}"
 labeldir["1j1b"]    = "+1j1b"
 labeldir["2j1b"]    = "+2j1b"
+labeldir["njets"]   = ""
 labeldir["DressSR"] = "+1j1b"
 labeldir["DressCR"] = "+1j1b+>0j_{loose}"
 labeldir["Dress1j1b"] = "+1j1b"
 labeldir["Dress2j1b"] = "+2j1b"
+labeldir["Dressnjets"] = ""
 
 chandir           = {}
 chandir["All"]    = "\\ell_{1}^{\\pm}\\ell_{2}^{\\mp}"
@@ -43,9 +43,11 @@ folderdir["SR"]   = "./results/MCData/"
 folderdir["CR"]   = "./results/MCData/control/"
 folderdir["1j1b"] = "./results/MCData/"
 folderdir["2j1b"] = "./results/MCData/2j1b/"
-folderdir["DressSR"]   = "./results/MCData/"
-folderdir["DressCR"]   = "./results/MCData/control/"
+folderdir["njets"] = "./results/MCData/"
+folderdir["DressSR"] = "./results/MCData/"
+folderdir["DressCR"] = "./results/MCData/control/"
 folderdir["Dress2j1b"] = "./results/MCData/2j1b/"
+folderdir["njets"] = "./results/MCData/"
 
 #legtxtsize  = 0.028
 legtxtsize  = 0.055
@@ -56,6 +58,7 @@ verbosity   = False
 NameOfTree  = vl.treename
 pathToTree  = vl.minipath
 nCores      = 1
+
 
 if (len(sys.argv) > 1):
     nCores      = int(sys.argv[1])
@@ -380,7 +383,7 @@ def plotthenumberofjets(tsk):
 def lazyoptimisation(tsk):
     var, reg, chn, year, bnng, lvl = tsk
     if   lvl  == "particle":      return plotdressvariable(tsk[:-2])
-    elif var  == "NLooseCentral" or var == "NBLooseCentral": return plotthenumberofjets(tsk[:-2])
+    elif var  == "NLooseCentral" or var == "NBLooseCentral" or "NJets" in var or "NBJets" in var: return plotthenumberofjets(tsk[:-2])
     elif bnng == "custom":        return plotcustomvariable(tsk[:-2])
     else:                         return plotvariable(tsk[:-2])
     return
@@ -409,6 +412,8 @@ if __name__ == '__main__':
                 tasks.append(("Sys_Pt",        "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Sys_M",         "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Jet2_Pt",       "2j1b", chn, yr, "descriptive", lvl))
+                tasks.append(("NJets",         "njets",chn, yr, "descriptive", lvl))
+                tasks.append(("NBJets",        "njets",chn, yr, "descriptive", lvl))
             tasks.append(("HTtot",         "SR",   chn, yr, "descriptive", "detector"))
             tasks.append(("C_jll",         "SR",   chn, yr, "descriptive", "detector"))
             tasks.append(("Lep1Lep2_HTOverHTtot","SR",chn,yr,"descriptive","detector"))

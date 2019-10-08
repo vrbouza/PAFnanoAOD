@@ -1515,18 +1515,35 @@ varList['NLooseCentraluncertainties'] = {
 
 
 
-varList['NBLooseCentral'] = {
-    'xaxis'       : 'Number of b-tagged loose jets',
+varList['NJets'] = {
+    'xaxis'       : 'Number of jets',
     'yaxis'       : 'd#sigma (pb)',
     'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
     'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
     'legpos'      : (0.70, 0.55, 0.90, 0.93),
-    'var'         : 'TNBLooseCentral',
-    'var_response': 'NBLooseCentral',
-    'var_gen'     : 'TDressNBLooseCentral',
+    'var'         : 'TNJets',
+    'var_response': 'NJets',
+    'var_gen'     : 'TDressNJets',
 }
-varList['NBLooseCentraluncertainties'] = {
-    'xaxis'       : varList['NBLooseCentral']['xaxis'],
+varList['NJetsuncertainties'] = {
+    'xaxis'       : varList['NJets']['xaxis'],
+    'yaxis'       : 'Relative uncertainty (adim.)'
+}
+
+
+
+varList['NBJets'] = {
+    'xaxis'       : 'Number of b-tagged jets',
+    'yaxis'       : 'd#sigma (pb)',
+    'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
+    'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
+    'legpos'      : (0.70, 0.55, 0.90, 0.93),
+    'var'         : 'TNBJets',
+    'var_response': 'NBJets',
+    'var_gen'     : 'TDressNBJets',
+}
+varList['NBJetsuncertainties'] = {
+    'xaxis'       : varList['NBJets']['xaxis'],
     'yaxis'       : 'Relative uncertainty (adim.)'
 }
 
