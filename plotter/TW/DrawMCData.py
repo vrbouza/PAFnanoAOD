@@ -6,19 +6,21 @@ from array import array
 print "===== Minitrees MC/DATA graphs plotting\n"
 vl.SetUpWarnings()
 
-cutdir            = {}
-cutdir["SR"]      = "TPassReco == 1"
-cutdir["CR"]      = "TNJets == 1  && TNBJets == 1 && TNLooseCentral > 1"
-cutdir["2j1b"]    = "TNJets == 2  && TNBJets == 1"
-cutdir["Dress2j1b"]="TDressNJets == 2 && TDressNBJets == 1 "
-cutdir["DressSR"] = "TPassDress == 1"
-cutdir["1j1b"]    = "TNJets == 1  && TNBJets == 1"
-cutdir["njets"]   = "(1)"
-cutdir["Dressnjets"]   = "(1)"
+cutdir              = {}
+cutdir["SR"]        = "TPassReco == 1"
+cutdir["CR"]        = "TNJets == 1  && TNBJets == 1 && TNLooseCentral > 1"
+cutdir["2j1b"]      = "TNJets == 2  && TNBJets == 1"
+cutdir["Dress2j1b"] ="TDressNJets == 2 && TDressNBJets == 1 "
+cutdir["DressSR"]   = "TPassDress == 1"
+cutdir["1j1b"]      = "TNJets == 1  && TNBJets == 1"
+cutdir["njets"]     = "1"
+cutdir["Dressnjets"] = "1"
 
-#systlist          = vl.GiveMeTheExpNamesWOJER(vl.varList["Names"]["ExpSysts"])
-systlist          = ""
-systdresslist     = ""
+#systlist            = vl.GiveMeTheExpNamesWOJER(vl.varList["Names"]["ExpSysts"])
+#systlist            = "stat"
+#systdresslist       = "stat"
+systlist            = ""
+systdresslist       = ""
 
 labeldir            = {}
 #labeldir["SR"]      ="+1j1b+0j_{loose}"
@@ -84,6 +86,7 @@ r.gROOT.LoadMacro('../PlotToPy.C+')
 r.gROOT.LoadMacro('../PlotToPyC.C+')
 r.gROOT.LoadMacro('../Datacard.C+')
 r.gROOT.LoadMacro('../PDFunc.C+')
+r.gROOT.LoadMacro('./AdditionalStuff.C+')
 
 
 def addnominalsamples(plotobj, year, adddata = True):
@@ -100,10 +103,10 @@ def addnominalsamples(plotobj, year, adddata = True):
         plotobj.AddSample("TTZToLLNuNu_M_10_*",           "VV+t#bar{t}V", r.itBkg, 390, systlist)
         plotobj.AddSample("TTZToLL_M_1to10_*",            "VV+t#bar{t}V", r.itBkg, 390, systlist)
 
-        #plotobj.AddSample("DYJetsToLL_M10to50_aMCatNLO",  "DY",          r.itBkg, 852, systlist);
-        #plotobj.AddSample("DYJetsToLL_M50_aMCatNLO",      "DY",          r.itBkg, 852, systlist);
-        plotobj.AddSample("DYJetsToLL_M_10to50_MLM_*",    "DY",           r.itBkg, 852, systlist);
-        plotobj.AddSample("DYJetsToLL_M_50_MLM_*",        "DY",           r.itBkg, 852, systlist);
+        plotobj.AddSample("DYJetsToLL_M_10to50_aMCatNLO_*",  "DY",          r.itBkg, 852, systlist);
+        plotobj.AddSample("DYJetsToLL_M_50_aMCatNLO_*",      "DY",          r.itBkg, 852, systlist);
+        #plotobj.AddSample("DYJetsToLL_M_10to50_MLM_*",    "DY",           r.itBkg, 852, systlist);
+        #plotobj.AddSample("DYJetsToLL_M_50_MLM_*",        "DY",           r.itBkg, 852, systlist);
 
         plotobj.AddSample("TTTo2L2Nu_*",                  "t#bar{t}",     r.itBkg, 633, systlist)
 
@@ -128,10 +131,10 @@ def addnominalsamples(plotobj, year, adddata = True):
         plotobj.AddSample("TTZToLLNuNu_M_10_*",           "VV+t#bar{t}V", r.itBkg, 390, systlist)
         plotobj.AddSample("TTZToLL_M_1to10_*",            "VV+t#bar{t}V", r.itBkg, 390, systlist)
 
-        #plotobj.AddSample("DYJetsToLL_M_10to50_aMCatNLO_*","DY",          r.itBkg, 852, systlist);
+        #plotobj.AddSample("DYJetsToLL_M_10to50_aMCatNLO_*","DY",          r.itBkg, 852, systlist); ## NO HAY
         plotobj.AddSample("DYJetsToLL_M_50_aMCatNLO_*",   "DY",           r.itBkg, 852, systlist);
         plotobj.AddSample("DYJetsToLL_M_10to50_MLM_*",    "DY",           r.itBkg, 852, systlist);
-        #plotobj.AddSample("DYJetsToLL_M_50_MLM_*",        "DY",           r.itBkg, 852, systlist);
+        #plotobj.AddSample("DYJetsToLL_M_50_MLM_*",        "DY",           r.itBkg, 852, systlist); ## NO HAY
 
         plotobj.AddSample("TTTo2L2Nu_*",                  "t#bar{t}",     r.itBkg, 633, systlist)
 
@@ -156,8 +159,8 @@ def addnominalsamples(plotobj, year, adddata = True):
         plotobj.AddSample("TTZToLLNuNu_M_10_*",           "VV+t#bar{t}V", r.itBkg, 390, systlist)
         plotobj.AddSample("TTZToLL_M_1to10_*",            "VV+t#bar{t}V", r.itBkg, 390, systlist)
 
-        #plotobj.AddSample("DYJetsToLL_M10to50_aMCatNLO",  "DY",          r.itBkg, 852, systlist);
-        #plotobj.AddSample("DYJetsToLL_M50_aMCatNLO",      "DY",          r.itBkg, 852, systlist);
+        #plotobj.AddSample("DYJetsToLL_M_10to50_aMCatNLO_*",  "DY",          r.itBkg, 852, systlist); ## NO HAY
+        #plotobj.AddSample("DYJetsToLL_M_50_aMCatNLO_*",   "DY",           r.itBkg, 852, systlist);
         plotobj.AddSample("DYJetsToLL_M_10to50_MLM_*",    "DY",           r.itBkg, 852, systlist);
         plotobj.AddSample("DYJetsToLL_M_50_MLM_*",        "DY",           r.itBkg, 852, systlist);
 
@@ -192,8 +195,9 @@ def setstylesettings(plotobj, var):
     plotobj.SetTexChanSize(0.06)
     plotobj.SetTextLumiPosX(0.69)
 
+    plotobj.SetYaxisOffset(0.8)
     #plotobj.SetYratioOffset(0.35)
-    plotobj.SetYratioOffset(0.45)
+    plotobj.SetYratioOffset(0.4)
     #plotobj.SetRatioStyle("S/B")
     if doNorm:
         plotobj.SetRatioMin(0.7)
@@ -219,12 +223,16 @@ def setstylesettings(plotobj, var):
 
     if "doLogY" in vl.varList[var]: plotobj.doSetLogy = vl.varList[var]['doLogY']
     else:                           plotobj.doSetLogy = False
+
     if doNorm:                      plotobj.doSetLogy = False
     return
 
 
 def plotvariable(tsk):
     var, cut, chan, year = tsk
+
+    print "\nBeginning plotting of variable", var, "with cuts", cut, "in the channel", chan, "and for the year", year
+
     nbins    = int(20) if "ndescbins" not in vl.varList[var] else int(vl.varList[var]['ndescbins'])
     lowedge  = float(vl.varList[var]['recobinning'][0])  if "descbinning" not in vl.varList[var] else float(vl.varList[var]['descbinning'][0])
     highedge = float(vl.varList[var]['recobinning'][-1]) if "descbinning" not in vl.varList[var] else float(vl.varList[var]['descbinning'][1])
@@ -266,10 +274,14 @@ def plotvariable(tsk):
 
 def plotdressvariable(tsk):
     var, cut, chan, year = tsk
+
+    print "\nBeginning plotting of variable", var, "with cuts", cut, "in the channel", chan, "and for the year", year
+
     nbins    = int(20) if "ndescbins" not in vl.varList[var] else int(vl.varList[var]['ndescbins'])
     lowedge  = float(vl.varList[var]['genbinning'][0])  if "descbinning" not in vl.varList[var] else float(vl.varList[var]['descbinning'][0])
     highedge = float(vl.varList[var]['genbinning'][-1]) if "descbinning" not in vl.varList[var] else float(vl.varList[var]['descbinning'][1])
     width    = (highedge - lowedge)/nbins
+    lumi_    = vl.Lumi16 if (year == "2016") else vl.Lumi17 if (year == "2017") else vl.Lumi18 if (year == "2018") else vl.Lumi
 
     p = r.PlotToPy(r.TString(vl.varList[var]['var_gen']), r.TString(cutdir["Dress" + cut]), r.TString(chan), nbins, lowedge, highedge, r.TString(var), r.TString(vl.varList[var]['xaxis'] if "xaxis_dress" not in vl.varList[var] else vl.varList[var]['xaxis_dress']))
     p.SetPath(pathToTree + year + "/");
@@ -277,7 +289,7 @@ def plotdressvariable(tsk):
     p.SetTreeName(NameOfTree);
     p.SetPlotFolder(folderdir[cut] + year + "/");
     p.SetTitleY("Events / " + str(int(round(width, 0))) + " GeV" if ("Eta" not in var and "DPhi" not in var and "DT" not in var) else "Events / bin" )
-    p.SetLumi(vl.Lumi)
+    p.SetLumi(lumi_)
     p.verbose  = verbosity
 
     p.SetWeight('TWeight_normal')
@@ -306,14 +318,18 @@ def plotdressvariable(tsk):
 
 def plotthenumberofjets(tsk):
     var, cut, chan, year = tsk
+
+    print "\nBeginning plotting of variable", var, "with cuts", cut, "in the channel", chan, "and for the year", year
+    lumi_    = vl.Lumi16 if (year == "2016") else vl.Lumi17 if (year == "2017") else vl.Lumi18 if (year == "2018") else vl.Lumi
+
     binning = array('f', vl.varList[var]['recobinning']) # For some reason, ROOT requires that you create FIRST this object, then put it inside the PlotToPyC.
-    p = r.PlotToPyC(r.TString(vl.varList[var]['var'] + "- 1"), r.TString(cutdir[cut]), r.TString(chan), int(len(vl.varList[var]['recobinning']) - 1), binning, r.TString(var), r.TString(vl.varList[var]['xaxis']))
+    p = r.PlotToPyC(r.TString(vl.varList[var]['var']), r.TString(cutdir[cut]), r.TString(chan), int(len(vl.varList[var]['recobinning']) - 1), binning, r.TString(var), r.TString(vl.varList[var]['xaxis']))
     p.SetPath(pathToTree + year + "/");
     p.SetPathSignal(pathToTree + year + "/");
     p.SetTreeName(NameOfTree);
     p.SetPlotFolder(folderdir[cut] + year + "/");
     p.SetTitleY("Events / bin")
-    p.SetLumi(vl.Lumi)
+    p.SetLumi(lumi_)
     p.verbose  = verbosity
     
     if doPrefChecks: p.SetWeight('TWeight * (1 - prefWeight)')   # FOR PREFIRING CHECKS
@@ -381,10 +397,95 @@ def plotthenumberofjets(tsk):
     del p
 
 
+
+def plotnjetsnbjets(tsk):
+    var, cut, chan, year = tsk
+
+    print "\nBeginning plotting of variable", var, "with cuts", cut, "in the channel", chan, "and for the year", year
+    lumi_    = vl.Lumi16 if (year == "2016") else vl.Lumi17 if (year == "2017") else vl.Lumi18 if (year == "2018") else vl.Lumi
+
+    binning = array('f', vl.varList[var]['recobinning']) # For some reason, ROOT requires that you create FIRST this object, then put it inside the PlotToPyC.
+    p = r.PlotToPyC(r.TString("nJetsnBs(TNJets, TNBJets)"), r.TString(cutdir[cut]), r.TString(chan), int(len(vl.varList[var]['recobinning']) - 1), binning, r.TString(var), r.TString(vl.varList[var]['xaxis']))
+    p.SetPath(pathToTree + year + "/");
+    p.SetPathSignal(pathToTree + year + "/");
+    p.SetTreeName(NameOfTree);
+    p.SetPlotFolder(folderdir[cut] + year + "/");
+    p.SetTitleY("Events / bin")
+    p.SetLumi(lumi_)
+    p.verbose  = verbosity
+
+    if doPrefChecks: p.SetWeight('TWeight * (1 - prefWeight)')   # FOR PREFIRING CHECKS
+
+    # Samples
+    addnominalsamples(p, year)
+
+    # Labels
+    p.SetChLabel(chandir[chan] + labeldir[cut])
+    p.SetChLabelPos(labelpos[0], labelpos[1], -1)
+
+    # General style settings
+    setstylesettings(p, var)
+
+    # Other settings
+    #p.SetDataStyle("psameE1")
+    #p.doUncInLegend = True
+    #p.SetRatioMin(0.6);
+    #p.SetRatioMax(1.4);
+    #p.SetPadPlotMargins(vl.margins)
+    #p.SetPadRatioMargins(vl.marginsratio)
+    #p.SetTexChanSize(0.06)
+    #p.SetTextLumiPosX(0.69)
+    ##p.SetYratioOffset(0.35)
+    #p.SetYratioOffset(0.45)
+    ##p.SetRatioYtitle("WWbb/tW+t#bar{t}")
+    ##p.SetRatioStyle("S/B")
+    #if doNorm:
+        #p.SetRatioMin(0.7)
+        #p.SetRatioMax(1.3)
+    ##else:
+        ##p.SetRatioMin(0)
+        ##p.SetRatioMax(0.2)
+    #p.SetCenterYAxis(False)
+    #p.ObliterateXErrorBars()
+    #if 'ncols' in vl.varList[var]: p.SetNColumns(vl.varList[var]['ncols'])
+
+    #p.SetCMSlabel("CMS");
+    #if vl.doPre: p.SetCMSmodeLabel("Preliminary");
+    #else:        p.SetCMSmodeLabel("");
+    #if 'legpos' in vl.varList[var]: thepos = vl.varList[var]['legpos']
+    #else:                           thepos = vl.legpos
+    #p.SetLegendPosition(thepos[0], thepos[1], thepos[2], thepos[3])
+    #p.SetLegendTextSize(legtxtsize)
+    #p.SetPlotFolder(folderdir[cut]);
+    #p.doYieldsInLeg = False;
+    #if "doLogY" in vl.varList[var]: p.doSetLogy = vl.varList[var]['doLogY']
+    #else:                           p.doSetLogy = False
+    #p.doSignal      = False;
+
+    # X axis labels
+    p.SetXaxisDivisions(010)
+    p.SetBinLabels("(0, 0);(1, 0);(1,1);(2,0);(2,1);(2,2);(#geq3,#geq0)", ";")
+    #p.SetXaxisLabelSize(0.16 / 0.66666) # This is because ROOT automatically changes the size of labels when transforming them to alphanumeric because of reasons
+    p.SetXaxisLabelSize(0.12 / 0.66666) # This is because ROOT automatically changes the size of labels when transforming them to alphanumeric because of reasons
+
+    # Output name
+    p.NoShowVarName = True;
+    p.SetOutputName("TNJetsNBJets_" + chan);
+
+    # Printing
+    p.DrawStack();
+    p.PrintSystematics()
+    p.PrintYields("", "", "", "")
+    p.PrintSystYields()
+    del p
+
+
+
 def lazyoptimisation(tsk):
     var, reg, chn, year, bnng, lvl = tsk
     if   lvl  == "particle":      return plotdressvariable(tsk[:-2])
-    elif var  == "NLooseCentral" or var == "NBLooseCentral" or "NJets" in var or "NBJets" in var: return plotthenumberofjets(tsk[:-2])
+    elif var  == "NJetsNBJets":   return plotnjetsnbjets(tsk[:-2])
+    elif var  == "NLooseCentral" or var == "NBLooseCentral" or var == "NJets" or var == "NBJets": return plotthenumberofjets(tsk[:-2])
     elif bnng == "custom":        return plotcustomvariable(tsk[:-2])
     else:                         return plotvariable(tsk[:-2])
     return
@@ -398,7 +499,10 @@ if __name__ == '__main__':
     #for chn in ["ElMu", "Muon", "Elec", "All"]:
     for chn in ["ElMu"]:
         for yr in ["2016", "2017", "2018"]:
-            for lvl in ["detector", "particle"]:
+        #for yr in ["2018"]:
+        #for yr in ["2017"]:
+            #for lvl in ["detector", "particle"]:
+            for lvl in ["detector"]:
                 tasks.append(("Lep1_Pt",       "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Lep1_Eta",      "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Lep2_Pt",       "SR",   chn, yr, "descriptive", lvl))
@@ -413,8 +517,8 @@ if __name__ == '__main__':
                 tasks.append(("Sys_Pt",        "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Sys_M",         "SR",   chn, yr, "descriptive", lvl))
                 tasks.append(("Jet2_Pt",       "2j1b", chn, yr, "descriptive", lvl))
-                tasks.append(("NJets",         "njets",chn, yr, "descriptive", lvl))
-                tasks.append(("NBJets",        "njets",chn, yr, "descriptive", lvl))
+            tasks.append(("NJets",         "njets",chn, yr, "descriptive", "detector"))
+            tasks.append(("NBJets",        "njets",chn, yr, "descriptive", "detector"))
             tasks.append(("HTtot",         "SR",   chn, yr, "descriptive", "detector"))
             tasks.append(("C_jll",         "SR",   chn, yr, "descriptive", "detector"))
             tasks.append(("Lep1Lep2_HTOverHTtot","SR",chn,yr,"descriptive","detector"))
@@ -429,6 +533,8 @@ if __name__ == '__main__':
             tasks.append(("Lep12Jet12MET_DR","2j1b",chn,yr, "descriptive", "detector"))
             tasks.append(("BDT2j1b",       "2j1b", chn, yr, "descriptive", "detector"))
             tasks.append(("Jet1_Eta",      "SR",   chn, yr, "descriptive", "detector"))
+            tasks.append(("NJetsNBJets",   "njets", chn, yr, "descriptive", "detector"))
+    tasks.append(("NJetsNBJets",   "njets", "ElMu", "2016", "descriptive", "detector"))
 
     if (nCores > 1):
       print "\n> Launching plotting processes..."
