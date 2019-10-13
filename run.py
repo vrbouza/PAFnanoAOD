@@ -143,6 +143,7 @@ def RunSamplePAF(selection, path, sample, year = 2018, xsec = 1, nSlots = 1, out
     for f in samples: print ' >> %s'%f
     print '## Total events:      %i'%nEventsInTree
     print '## Generated events:  %i'%nGenEvents
+    print '## Cross section:     {xc}'.format(xc = xsec)
     if isamcatnlo:
       print '## Sum of weights:    %1.2f'%nSumOfWeights
       print '## This sample has gen weights!!'
