@@ -1263,8 +1263,8 @@ varList['Sys_Muncertainties'] = {
 varList['Sys_Pt'] = {
     'xaxis'       : 'p_{T}(\\ell_{1}, \\ell_{2}, j,\\slash{E}_{T})',
     'yaxis'       : 'd#sigma (pb)',
-    'genbinning'  : [0., 20., 40., 70., 300.],
-    'recobinning' : [0., 10., 20., 30., 40., 50., 60., 70., 300.],
+    'genbinning'  : [0., 20., 40., 70., 150.],
+    'recobinning' : [0., 10., 20., 30., 40., 50., 60., 70., 150.],
     'var'         : 'TSys_Pt',
     'var_response': 'Sys_Pt',
     'var_gen'     : 'TDressSys_Pt',
@@ -1504,9 +1504,9 @@ varList['NLooseCentral'] = {
     'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
     'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
     'legpos'      : (0.70, 0.55, 0.90, 0.93),
-    'var'         : 'TNLooseCentral',
+    'var'         : 'TNLooseCentral - 1',
     'var_response': 'NLooseCentral',
-    'var_gen'     : 'TDressNLooseCentral',
+    'var_gen'     : 'TDressNLooseCentral - 1',
 }
 varList['NLooseCentraluncertainties'] = {
     'xaxis'       : varList['NLooseCentral']['xaxis'],
@@ -1520,9 +1520,9 @@ varList['NBLooseCentral'] = {
     'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
     'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
     'legpos'      : (0.70, 0.55, 0.90, 0.93),
-    'var'         : 'TNBLooseCentral',
+    'var'         : 'TNBLooseCentral - 1',
     'var_response': 'NBLooseCentral',
-    'var_gen'     : 'TDressNBLooseCentral',
+    'var_gen'     : 'TDressNBLooseCentral - 1',
 }
 varList['NBLooseCentraluncertainties'] = {
     'xaxis'       : varList['NBLooseCentral']['xaxis'],
@@ -1534,7 +1534,8 @@ varList['NJets'] = {
     'yaxis'       : 'd#sigma (pb)',
     'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
     'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
-    'legpos'      : (0.70, 0.55, 0.90, 0.93),
+    'legpos'      : (0.7, 0.55, 0.90, 0.93),
+    'legposdesc'  : (0.7, 0.55, 0.90, 0.93),
     'var'         : 'TNJets',
     'var_response': 'NJets',
     'var_gen'     : 'TDressNJets',
@@ -1551,7 +1552,8 @@ varList['NBJets'] = {
     'yaxis'       : 'd#sigma (pb)',
     'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
     'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5],
-    'legpos'      : (0.70, 0.55, 0.90, 0.93),
+    'legpos'      : (0.7, 0.55, 0.90, 0.93),
+    'legposdesc'  : (0.7, 0.55, 0.90, 0.93),
     'var'         : 'TNBJets',
     'var_response': 'NBJets',
     'var_gen'     : 'TDressNBJets',
@@ -1561,6 +1563,23 @@ varList['NBJetsuncertainties'] = {
     'yaxis'       : 'Relative uncertainty (adim.)'
 }
 
+
+
+varList['NJetsNBJets'] = {
+    'xaxis'       : '(Number of jets, number of b-tagged jets)',
+    'yaxis'       : 'd#sigma (pb)',
+    'genbinning'  : [-0.5, 1.5, 3.5, 4.5],
+    'recobinning' : [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5],
+    'legpos'      : (0.7, 0.55, 0.90, 0.93),
+    'legposdesc'  : (0.58, 0.55, 0.78, 0.93),
+    'var'         : 'TNBJets',
+    'var_response': 'NBJets',
+    'var_gen'     : 'TDressNBJets',
+}
+varList['NJetsNBJetsuncertainties'] = {
+    'xaxis'       : varList['NJetsNBJets']['xaxis'],
+    'yaxis'       : 'Relative uncertainty (adim.)'
+}
 
 
 systMap = {
