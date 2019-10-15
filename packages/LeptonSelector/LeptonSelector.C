@@ -8,15 +8,16 @@
 //
 //
 ///////////////////////////////////////////////////////////////////////////////////////////
-
-
 #include "LeptonSelector.h"
 
 ClassImp(LeptonSelector);
 LeptonSelector::LeptonSelector() : PAFChainItemSelector() {}
-void LeptonSelector::Summary(){}
 
-void LeptonSelector::Initialise(){
+
+void LeptonSelector::Summary() {}
+
+
+void LeptonSelector::Initialise() {
   year    = GetParam<TString>("year").Atoi();
   gIsData        = GetParam<Bool_t>("IsData");
   selection      = GetParam<TString>("selection");
@@ -31,10 +32,10 @@ void LeptonSelector::Initialise(){
   else if(year == 2018) gIs2018 = true;
   else if(year == 2016) gIs2016 = true;
 
-  LepSF     = new LeptonSF(localPath + "/InputFiles/", year);
+  LepSF = new LeptonSF(localPath + "/InputFiles/", year);
   //ElecScale = new ElecScaleClass(localPath + "/InputFiles/ElecScale.dat");
 
-  if(!gIsData){
+  if (!gIsData) {
     LepSF->loadHisto(iTrigDoubleMuon);
     LepSF->loadHisto(iTrigDoubleElec);
     LepSF->loadHisto(iTrigElMu);
@@ -45,9 +46,10 @@ void LeptonSelector::Initialise(){
   }
 
   selLeptons   = std::vector<Lepton>();
-  vetoLeptons   = std::vector<Lepton>();
-  looseLeptons   = std::vector<Lepton>();
+  vetoLeptons  = std::vector<Lepton>();
+  looseLeptons = std::vector<Lepton>();
 }
+
 
 //################################################################
 //## Functions and definition of wps...
@@ -269,9 +271,9 @@ void LeptonSelector::InsideLoop(){
 
   // Loop over the leptons and select
   if(!gDoLepGood){
-    nElec     = Get<Int_t>("nElectron");
-    nMuon     = Get<Int_t>("nMuon");
-    nLep = nElec+nMuon;
+    nElec = Get<Int_t>("nElectron");
+    nMuon = Get<Int_t>("nMuon");
+    nLep  = nElec + nMuon;
   }
   else{
     nMuon = 0; nElec = 0; nLep = Get<Int_t>("nLepGood");
@@ -297,30 +299,31 @@ void LeptonSelector::InsideLoop(){
   }
 
   // Loop over reco leptons
-  int index = 0; int i; int LepType = 11;
-  for(i = 0; i < nLep; i++){
-    if(!gDoLepGood){
-      if(i < nElec){
+  Int_t index = 0; Int_t i; Int_t LepType = 11;
+  for (i = 0; i < nLep; i++) {
+    if (!gDoLepGood) {
+      if (i < nElec) {
         LepType = 11; 
         index = i;
       }
-      else{
+      else {
         LepType = 13;
-        index = i- nElec;
+        index   = i - nElec;
       }
     }
-    else{
+    else {
       LepType = 0;
-      index = i;
+      index   = i;
     }
+
     GetLeptonVariables(index, LepType);
     tL = Lepton(tP, charge, type);
-    if(tL.isMuon){
+    if(tL.isMuon) {
       tL.SetIso(RelIso04);
       tL.SetIsIso(RelIso04 < 0.15);
       tL.SetEnergyUnc(GetMuonEnergyScale());
     }
-    else{
+    else {
       tL.SetIso(RelIso03);
       tL.SetR9(R9);
       tL.SetEnergyUnc(0);//ElecScale->GetUnc(tL.Pt(), tL.Eta(), tL.GetR9()));
@@ -360,7 +363,7 @@ void LeptonSelector::InsideLoop(){
   nLooseLeptons = looseLeptons.size();
   nGenLeptons   = genLeptons.size();
 
-  //=== Trigger SF  
+  //=== Trigger SF
   TriggerSF = 1; TriggerSFerr = 0;
   if(!gIsData){
     if(nSelLeptons >= 2){
@@ -410,7 +413,7 @@ void LeptonSelector::InsideLoop(){
 //################################################################
 //## Read the variables
 //################################################################
-void LeptonSelector::GetLeptonVariables(Int_t i, int LepType){ // Once per muon, get all the info
+void LeptonSelector::GetLeptonVariables(Int_t i, Int_t LepType){ // Once per muon, get all the info
   TString LeptonName = abs(LepType) == 11? "Electron" : "Muon";
   if(LepType == 0) LeptonName = "LepGood";
   tP.SetPtEtaPhiM(Get<Float_t>(LeptonName + "_pt", i), Get<Float_t>(LeptonName + "_eta", i), Get<Float_t>(LeptonName + "_phi", i), Get<Float_t>(LeptonName + "_mass", i));
@@ -470,31 +473,6 @@ void LeptonSelector::GetGenLeptonVariables(Int_t i){
   charge = pdgid < 0 ? 1 : -1;
   type = TMath::Abs(pdgid) == 11 ? 1 : 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
