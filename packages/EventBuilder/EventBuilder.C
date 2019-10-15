@@ -29,9 +29,6 @@ EventBuilder::EventBuilder() : PAFChainItemSelector(),
                                genWeight(0),
                                nTrueInt(0),
                                gChannel(0),
-                               //fPUWeight(0),
-                               //fPUWeightUp(0),
-                               //fPUWeightDown(0),
                                gIsSingleMuon(false),
                                gIsSingleElec(false),
                                gIsDoubleMuon(false),
@@ -53,31 +50,34 @@ EventBuilder::EventBuilder() : PAFChainItemSelector(),
 {}
 
 
+EventBuilder::~EventBuilder() {}
 
-EventBuilder::~EventBuilder() {
-  //delete fPUWeight;
-  //delete fPUWeightUp;
-  //delete fPUWeightDown;
-}
 
-void EventBuilder::Initialise(){
-  year         = GetParam<TString>("year").Atoi();
-  gIsData      = GetParam<Bool_t>("IsData");
-  selection    = GetParam<TString>("selection");
-  gSampleName  = GetParam<TString>("sampleName");
-  gIsMCatNLO   = GetParam<Bool_t>("IsMCatNLO");
-  gXSec        = GetParam<Float_t>("xsec");
-  gOptions     = GetParam<TString>("_options");
-  gSelection   = GetSelection(selection);
-  gChannel = -1;
+void EventBuilder::Initialise() {
+  year             = GetParam<TString>("year").Atoi();
+  gIsData          = GetParam<Bool_t>("IsData");
+  selection        = GetParam<TString>("selection");
+  gSampleName      = GetParam<TString>("sampleName");
+  gIsMCatNLO       = GetParam<Bool_t>("IsMCatNLO");
+  gXSec            = GetParam<Float_t>("xsec");
+  gOptions         = GetParam<TString>("_options");
+  gPUWeight        = gOptions.Contains("PUweight") ? true : false;
+  gSelection       = GetSelection(selection);
+  gChannel         = -1;
   nProcessedEvents = 0;
-  
-  gIs2017 = false; gIs2016 = false; gIs2018 = false;
-  if     (year == 2017) gIs2017 = true;
-  else if(year == 2018) gIs2018 = true;
-  else if(year == 2016) gIs2016 = true;
+  Weight           = GetParam<Double_t>("weight");
+  passTrigger      = 1;
+  isSS             = 0;
+  nTrueInt         = 0;
+  PUSF             = 1;
+  PUSF_Up          = 1;
+  PUSF_Down        = 1;
 
-  gSelection     = GetSelection(selection);
+
+  gIs2017 = false; gIs2016 = false; gIs2018 = false;
+  if      (year == 2017) gIs2017 = true;
+  else if (year == 2018) gIs2018 = true;
+  else if (year == 2016) gIs2016 = true;
 
   Float_t binsEta[] = {0, 1, 2.1, 2.4};     Int_t nbinsEta = 3;
   Float_t binsPt[]  = {20, 30, 40, 50, 60}; Int_t nbinsPt  = 4;
@@ -97,69 +97,54 @@ void EventBuilder::Initialise(){
     MuMuTrigEffDen = CreateH2F("MuMuTrigEffDen", "", nbinsEta, binsEta, nbinsPt, binsPt);
     ElMuTrigEffDen = CreateH2F("ElMuTrigEffDen", "", nbinsEta, binsEta, nbinsPt, binsPt);
   }
-  
 
-  selLeptons = std::vector<Lepton>();
+
+  selLeptons  = std::vector<Lepton>();
   vetoLeptons = std::vector<Lepton>();
 
   gIsDoubleElec = false; gIsDoubleMuon = false; gIsSingleElec = false;
   gIsSingleMuon = false; gIsMuonEG = false; gIsMET = false; gIsEGamma = false;
-  if(gSampleName.Contains("DoubleEG")) gIsDoubleElec = true;
-  else if(gSampleName.Contains("DoubleMuon")) gIsDoubleMuon = true;
-  else if(gSampleName.Contains("SingleElec")) gIsSingleElec = true;
-  else if(gSampleName.Contains("SingleMuon")) gIsSingleMuon = true;
-  else if(gSampleName.Contains("MuonEG"))     gIsMuonEG     = true;
-  else if(gSampleName.Contains("HighEGJet"))  gIsSingleElec = true;
-  else if(gSampleName.Contains("MET"))        gIsMET = true;
-  else if(gSampleName.Contains("EGamma"))     gIsEGamma = true;
-  if(gOptions.Contains("DoubleEG")) gIsDoubleElec = true;
-  else if(gOptions.Contains("SingleElec")) gIsSingleElec = true;
 
-/*
-  fPUWeight     = new PUWeight(19468.3, Moriond17MC_PoissonOOTPU, "2016_Moriond17");
-  if (!gIsData) {
-    fPUWeightUp   = new PUWeight(18494.9,  Moriond17MC_PoissonOOTPU, "2016_Moriond17"); //  18494.9
-    fPUWeightDown = new PUWeight(20441.7,  Moriond17MC_PoissonOOTPU, "2016_Moriond17"); //  20441.7
-  }
-*/
+  if      (gSampleName.Contains("DoubleEG"))   gIsDoubleElec = true;
+  else if (gSampleName.Contains("DoubleMuon")) gIsDoubleMuon = true;
+  else if (gSampleName.Contains("SingleElec")) gIsSingleElec = true;
+  else if (gSampleName.Contains("SingleMuon")) gIsSingleMuon = true;
+  else if (gSampleName.Contains("MuonEG"))     gIsMuonEG     = true;
+  else if (gSampleName.Contains("HighEGJet"))  gIsSingleElec = true;
+  else if (gSampleName.Contains("MET"))        gIsMET        = true;
+  else if (gSampleName.Contains("EGamma"))     gIsEGamma     = true;
 
-  Weight = GetParam<Double_t>("weight");
-
-  passTrigger = 1;
-  isSS = 0;
-  nTrueInt = 0;
-
-  PUSF = 1;
-  PUSF_Up = 1;
-  PUSF_Down = 1;
+  if      (gOptions.Contains("DoubleEG"))      gIsDoubleElec = true;
+  else if (gOptions.Contains("SingleElec"))    gIsSingleElec = true;
 }
 
 
-void EventBuilder::InsideLoop(){
+void EventBuilder::InsideLoop() {
   nProcessedEvents++;
   // >>>>>>>>>>>>>> Get selected leptons:
-  selLeptons = GetParam<std::vector<Lepton>>("selLeptons");
+  selLeptons  = GetParam<std::vector<Lepton>>("selLeptons");
   vetoLeptons = GetParam<std::vector<Lepton>>("vetoLeptons");
 
   // Set channel
-  if(selLeptons.size() >= 2){ // Dilepton Channels
-    if     (selLeptons.at(0).isElec && selLeptons.at(1).isMuon) gChannel = iElMu;
-    else if(selLeptons.at(0).isMuon && selLeptons.at(1).isElec) gChannel = iElMu;
-    else if(selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) gChannel = iMuon;
-    else if(selLeptons.at(0).isElec && selLeptons.at(1).isElec) gChannel = iElec;
-    isSS = (selLeptons[0].charge*selLeptons[1].charge) > 0;
+  if(selLeptons.size() >= 2) { // Dilepton Channels
+    if      (selLeptons.at(0).isElec && selLeptons.at(1).isMuon) gChannel = iElMu;
+    else if (selLeptons.at(0).isMuon && selLeptons.at(1).isElec) gChannel = iElMu;
+    else if (selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) gChannel = iMuon;
+    else if (selLeptons.at(0).isElec && selLeptons.at(1).isElec) gChannel = iElec;
+    isSS = (selLeptons[0].charge * selLeptons[1].charge) > 0;
   }
-  else{
-    isSS = false;
+  else {
+    isSS     = false;
     gChannel = -1;
   }
+
   passTrigger  = false;
 
-  if(gChannel == iElMu){
+  if(gChannel == iElMu) {
     Lepton muon = selLeptons.at(0).isMuon ? selLeptons.at(0) : selLeptons.at(1);
     Lepton elec = selLeptons.at(0).isMuon ? selLeptons.at(1) : selLeptons.at(0);
-    float mupt = muon.Pt() < 200 ? muon.Pt() : 199;
-    float elpt = elec.Pt() < 200 ? elec.Pt() : 199;
+    Float_t mupt = muon.Pt() < 200 ? muon.Pt() : 199;
+    Float_t elpt = elec.Pt() < 200 ? elec.Pt() : 199;
     if (makeeffhistos) {
       if(muon.Pt() > 20 && PassesSingleMuonTrigger())                              ElecTrigEffDen->Fill(elec.Eta(), elpt);
       if(muon.Pt() > 20 && PassesSingleMuonTrigger() && PassesSingleElecTrigger()) ElecTrigEffNum->Fill(elec.Eta(), elpt);
@@ -168,20 +153,16 @@ void EventBuilder::InsideLoop(){
     }
   }
 
-  if(selLeptons.size() >= 2){ // Dilepton Channels
-    float pt = selLeptons.at(0).Pt() < 200 ? selLeptons.at(0).Pt() : 199;
-    float pt2= selLeptons.at(1).Pt();
-    float TWeight = 1;
-    //if(!gIsData){
-    //  Float_t lepSF = selLeptons.at(0).GetSF( 0)*selLeptons.at(1).GetSF( 0);
-    //  Float_t PUSF  = Get<Float_t>("puWeight");
-    //  TWeight       = NormWeight*lepSF*PUSF;
-    //}
+  if (selLeptons.size() >= 2) { // Dilepton Channels
+    Float_t pt  = selLeptons.at(0).Pt() < 200 ? selLeptons.at(0).Pt() : 199;
+    Float_t pt2 = selLeptons.at(1).Pt();
+    Float_t TWeight = 1;
+
     Float_t MET = gIs2017? Get<Float_t>("METFixEE2017_pt") : Get<Float_t>("MET_pt");
 
-    if(pt > 25 && pt2 > 20 && MET > 120){
-      float eta = TMath::Abs(selLeptons.at(0).Eta());
-      float eta2 = selLeptons.at(1).Eta();
+    if (pt > 25 && pt2 > 20 && MET > 120) {
+      Float_t eta  = TMath::Abs(selLeptons.at(0).Eta());
+      Float_t eta2 = selLeptons.at(1).Eta();
       
       if (makeeffhistos) {
         if (gChannel == iMuon && PassesMETtrigger()) {
@@ -207,24 +188,35 @@ void EventBuilder::InsideLoop(){
   METfilters = PassesMETfilters();
 
   // >>>>>>>>> Calculate norm weight
-  if(gIsMCatNLO) genWeight = (Double_t)Get<Float_t>("genWeight");
-  else           genWeight = 1;
+  if (gIsMCatNLO) genWeight = (Double_t)Get<Float_t>("genWeight");
+  else            genWeight = 1;
+
   NormWeight = Weight*genWeight;
-  if(gIsData) NormWeight = 1;
- 
-  SetParam("gChannel",        gChannel);
-  SetParam("NormWeight",      NormWeight);
-  SetParam("passTrigger",     passTrigger);
-  SetParam("isSS",            isSS);
-  SetParam("METfilters",      METfilters);
+  if (gIsData) NormWeight = 1;
+
+  // Obtain PU information
+  if (!gIsData && gPUWeight) {
+    PUSF      = (Double_t)Get<Float_t>("puWeight");
+    PUSF_Up   = (Double_t)Get<Float_t>("puWeightUp");
+    PUSF_Down = (Double_t)Get<Float_t>("puWeightDown");
+  } else {
+    PUSF      = 1.;
+    PUSF_Up   = 1.;
+    PUSF_Down = 1.;
+  }
+
+  SetParam("gChannel",    gChannel);
+  SetParam("NormWeight",  NormWeight);
+  SetParam("passTrigger", passTrigger);
+  SetParam("isSS",        isSS);
+  SetParam("METfilters",  METfilters);
+  SetParam("PUSF",        PUSF);
+  SetParam("PUSF_Up",     PUSF_Up);
+  SetParam("PUSF_Down",   PUSF_Down);
 }
 
 
-
-void EventBuilder::Summary(){
-}
-
-
+void EventBuilder::Summary() {}
 
 
 

@@ -32,7 +32,7 @@ class EventBuilder : public PAFChainItemSelector{
     //Float_t  TrigSFElec_Down; Float_t  TrigSFMuon_Down; Float_t  TrigSFElMu_Down;
 
     Float_t TriggerSF; Float_t TriggerSF_Up; Float_t TriggerSF_Down; Float_t TriggerSF_err;
-    Float_t PUSF;      Float_t PUSF_Up;      Float_t PUSF_Down;
+    Double_t PUSF;     Double_t PUSF_Up;     Double_t PUSF_Down;
 
     TH2F* ElecTrigEffNum;
     TH2F* ElecTrigEffDen;
@@ -89,6 +89,7 @@ class EventBuilder : public PAFChainItemSelector{
     TString selection;
     TString gSampleName;
     TString gPathToHeppyTrees;
+    Bool_t   gPUWeight;
     Float_t  gXSec;
     Float_t  gCount;
     Bool_t   gIsMCatNLO;
