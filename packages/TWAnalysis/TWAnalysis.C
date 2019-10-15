@@ -88,6 +88,8 @@ void TWAnalysis::InsideLoop() {
   passMETfilters   = GetParam<Bool_t>("METfilters");
   passTrigger      = GetParam<Bool_t>("passTrigger");
   year             = (UShort_t)GetParam<Int_t>("year");
+  TChannel         = (Char_t)GetParam<Int_t>("gChannel");
+  TIsSS            = GetParam<Bool_t>("isSS");
 
   // Leptons and Jets
   GetLeptonVariables();
@@ -568,16 +570,16 @@ void TWAnalysis::GetLeptonVariables() {
       TLepElec_EtaJERUp    = selLeptons.at(1).Eta();
     }
 
-      if      (selLeptons.at(0).isMuon && selLeptons.at(1).isElec) TChannel = iElMu;
-      else if (selLeptons.at(0).isElec && selLeptons.at(1).isMuon) TChannel = iElMu;
-      else if (selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) TChannel = iMuon;
-      else if (selLeptons.at(0).isElec && selLeptons.at(1).isElec) TChannel = iElec;
-      TIsSS = (selLeptons.at(0).charge * selLeptons.at(1).charge) > 0;
+//       if      (selLeptons.at(0).isMuon && selLeptons.at(1).isElec) TChannel = iElMu;
+//       else if (selLeptons.at(0).isElec && selLeptons.at(1).isMuon) TChannel = iElMu;
+//       else if (selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) TChannel = iMuon;
+//       else if (selLeptons.at(0).isElec && selLeptons.at(1).isElec) TChannel = iElec;
+//       TIsSS = (selLeptons.at(0).charge * selLeptons.at(1).charge) > 0;
     }
-    else {
-      TChannel = -1;
-      TIsSS    = false;
-    }
+//     else {
+//       TChannel = -1;
+//       TIsSS    = false;
+//     }
   }
 }
 
