@@ -131,7 +131,7 @@ void EventBuilder::InsideLoop() {
     else if (selLeptons.at(0).isMuon && selLeptons.at(1).isElec) gChannel = iElMu;
     else if (selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) gChannel = iMuon;
     else if (selLeptons.at(0).isElec && selLeptons.at(1).isElec) gChannel = iElec;
-    isSS = (selLeptons[0].charge * selLeptons[1].charge) > 0;
+    isSS = (selLeptons.at(0).charge * selLeptons.at(1).charge) > 0;
   }
   else {
     isSS     = false;
