@@ -58,38 +58,36 @@ void TWAnalysis::InsideLoop() {
   TEvent = Get<ULong64_t>("event");
 
   // Vectors with the objects
-  DressLeptons      = GetParam<vector<Lepton>>("genLeptons");
-  selLeptons        = GetParam<vector<Lepton>>("selLeptons");
-  selJets           = GetParam<vector<Jet>>("selJets");
-  selJetsJecUp      = GetParam<vector<Jet>>("selJetsJecUp");
-  selJetsJecDown    = GetParam<vector<Jet>>("selJetsJecDown");
-  selJetsJER        = GetParam<vector<Jet>>("selJetsJER");
-  TNBJets           = (UChar_t)GetParam<Int_t>("nSelBJets");
-  vetoJets          = GetParam<vector<Jet>>("vetoJets");
-  genJets           = GetParam<vector<Jet>>("genJets");
+  DressLeptons     = GetParam<vector<Lepton>>("genLeptons");
+  selLeptons       = GetParam<vector<Lepton>>("selLeptons");
+  selJets          = GetParam<vector<Jet>>("selJets");
+  selJetsJecUp     = GetParam<vector<Jet>>("selJetsJecUp");
+  selJetsJecDown   = GetParam<vector<Jet>>("selJetsJecDown");
+  selJetsJER       = GetParam<vector<Jet>>("selJetsJER");
+  TNBJets          = (UChar_t)GetParam<Int_t>("nSelBJets");
+  vetoJets         = GetParam<vector<Jet>>("vetoJets");
+  genJets          = GetParam<vector<Jet>>("genJets");
 
   // Weights and SFs
-  TWeight_normal    = GetParam<Double_t>("NormWeight");
-  TrigSF            = (Double_t)GetParam<Float_t>("TriggerSF");
-  TrigSFerr         = (Double_t)GetParam<Float_t>("TriggerSFerr");
+  TWeight_normal   = GetParam<Double_t>("NormWeight");
 
-  if (!gIsData && gPUWeight) {
-    PUSF         = (Double_t)Get<Float_t>("puWeight");
-    PUSF_Up      = (Double_t)Get<Float_t>("puWeightUp");
-    PUSF_Down    = (Double_t)Get<Float_t>("puWeightDown");
-  }
-  else {PUSF = 1; PUSF_Up = 1; PUSF_Down = 1;}
+  TrigSF           = (Double_t)GetParam<Float_t>("TriggerSF");
+  TrigSFerr        = (Double_t)GetParam<Float_t>("TriggerSFerr");
 
-  BtagSF            = (Double_t)GetParam<Float_t>("BtagSF");
-  BtagSFBtagUp      = (Double_t)GetParam<Float_t>("BtagSFBtagUp");
-  BtagSFBtagDown    = (Double_t)GetParam<Float_t>("BtagSFBtagDown");
-  BtagSFMistagUp    = (Double_t)GetParam<Float_t>("BtagSFMistagUp");
-  BtagSFMistagDown  = (Double_t)GetParam<Float_t>("BtagSFMistagDown");
+  PUSF             = GetParam<Double_t>("PUSF");
+  PUSF_Up          = GetParam<Double_t>("PUSF_Up");
+  PUSF_Down        = GetParam<Double_t>("PUSF_Down");
+
+  BtagSF           = GetParam<Double_t>("BtagSF");
+  BtagSFBtagUp     = GetParam<Double_t>("BtagSFBtagUp");
+  BtagSFBtagDown   = GetParam<Double_t>("BtagSFBtagDown");
+  BtagSFMistagUp   = GetParam<Double_t>("BtagSFMistagUp");
+  BtagSFMistagDown = GetParam<Double_t>("BtagSFMistagDown");
 
   // Event variables
-  passMETfilters    = GetParam<Bool_t>("METfilters");
-  passTrigger       = GetParam<Bool_t>("passTrigger");
-  year              = (UShort_t)GetParam<Int_t>("year");
+  passMETfilters   = GetParam<Bool_t>("METfilters");
+  passTrigger      = GetParam<Bool_t>("passTrigger");
+  year             = (UShort_t)GetParam<Int_t>("year");
 
   // Leptons and Jets
   GetLeptonVariables();
@@ -129,7 +127,7 @@ void TWAnalysis::InsideLoop() {
 
 
 
-void TWAnalysis::Summary(){}
+void TWAnalysis::Summary() {}
 
 
 
