@@ -50,11 +50,11 @@ class JetSelector : public PAFChainItemSelector{
     Float_t MET_JESUp;
     Float_t MET_JESDown;
 
-    Float_t BtagSF;
-    Float_t BtagSFBtagUp;
-    Float_t BtagSFBtagDown;
-    Float_t BtagSFMistagUp;
-    Float_t BtagSFMistagDown;
+    Double_t BtagSF;
+    Double_t BtagSFBtagUp;
+    Double_t BtagSFBtagDown;
+    Double_t BtagSFMistagUp;
+    Double_t BtagSFMistagDown;
 
   protected:
 
@@ -103,8 +103,8 @@ class JetSelector : public PAFChainItemSelector{
 
     void GetJetVariables(Int_t i);
     void GetGenJetVariables(Int_t i);
-    Bool_t IsBtag(Jet j); 
-    void SetSystematics(Jet *j);
+    Bool_t IsBtag(Jet j, TString algo = "CSVv2");
+    void SetSystematics(Jet *j, TString algo = "CSVv2");
 //    Bool_t Cleaning(Jet j, vector<Lepton> vLep, Float_t minDR = 0.4);
 
     ClassDef(JetSelector, 0);
