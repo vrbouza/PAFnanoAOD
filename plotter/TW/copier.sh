@@ -67,7 +67,7 @@ else
   m=$(date +%m)
   y=$(date +%Y)
   savefolder=$y$lowerbar$m$lowerbar$d
-  savepath=$storagepath$savefolder
+  savepath=$storagepath$minitrees$slash$savefolder
 fi
 
 
