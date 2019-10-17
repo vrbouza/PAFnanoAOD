@@ -9,6 +9,7 @@ doSendPath = True
 
 # Check if ROOT and PAF is loaded...
 import imp, os, sys, time, re, argparse
+from multiprocessing import Pool
 try:
     imp.find_module('ROOT')
     found = True
@@ -344,6 +345,7 @@ if __name__ == "__main__":
   parser.add_argument('--fixedchunk', '-f', default=-1         , help = 'Chunk to be produced alone. It requires to specify the number of chunks in the configuration file. IMPORTANT: is the CHUNK number (from 0 to N-1).')
   parser.add_argument('--check'           , action='store_true', help = 'Check the output trees')
   parser.add_argument('--resubmit'        , action='store_true', help = 'Resubmit jobs')
+  parser.add_argument('--launchparallel','-l',default=1,         help = 'If given a larger number than one, a parallelisation of the launching of jobs is done.')
 
   args = parser.parse_args()
   aarg = sys.argv
@@ -369,6 +371,7 @@ if __name__ == "__main__":
   doCheck     = args.check
   doReSubmit  = args.resubmit
   if doReSubmit: doCheck = True
+  nCoresLaunch= int(args.launchparallel)
 
   # Check if a cfg file is given as first argument
   fname = selection
@@ -483,10 +486,12 @@ if __name__ == "__main__":
       #samplefiles[spl[0]] = [samplefiles[spl[0]][0]]
       outname = 'test'
 
-    for sname in spl:
-      if not isinstance(sname, tuple): truesname = sname
+    def ProcessSample(sname):
+      if not isinstance(sname, tuple):
+        truesname  = sname
+        fixedchunk = -1
       else:
-        truesname = sname[0]
+        truesname  = sname[0]
         fixedchunk = sname[1]
 
       outname = truesname
@@ -529,6 +534,64 @@ if __name__ == "__main__":
 
       else:
         RunSamplePAF(selection, path, sample, year, xsec, ncores, outname, outpath, options, nEvents, FirstEvent, prefix, verbose, pretend, dotest, sendJobs, queue)
+
+    if nCoresLaunch > 1:
+      print ">> We are going to parallelise the launching of jobs using", nCoresLaunch, "processes."
+      pool = Pool(nCoresLaunch)
+
+      pool.map(ProcessSample, spl)
+      pool.close()
+      pool.join()
+      del pool
+    else:
+      for sname in spl: ProcessSample(sname)
+
+    #for sname in spl:
+      #if not isinstance(sname, tuple): truesname = sname
+      #else:
+        #truesname = sname[0]
+        #fixedchunk = sname[1]
+
+      #outname = truesname
+      #sample  = samplefiles[truesname]
+      #ncores  = nslots[truesname]
+
+      #if truesname in chunkdir:
+        #tmpsample = sample
+        #tmppath   = path
+        #tmpnchs   = int(chunkdir[truesname])
+        #if verbose: print " >> The sample {smp} is going to be separated into {chs} chunks.".format(smp = truesname, chs = str(chunkdir[truesname]))
+        #if ',' in tmpsample:
+          #tmpsample.replace(' ', '')
+          #tmpsample = tmpsample.split(',')
+        #if not isinstance(tmpsample, list): tmpsample = [tmpsample]
+        #if not tmppath.endswith('/'): tmppath += '/'
+        #tmpsamples   = GetSampleList(tmppath, tmpsample)
+        #nTrueEntries = GetAllInfoFromFile([tmppath + x for x in tmpsamples])[0]
+
+        #if not sendJobs:
+          #ExecOrder("sleep 2s")
+          #ExecOrder("resetpaf")
+        #if fixedchunk < 0:
+          #for ich in range(tmpnchs):
+            #tmpoutname    = outname + "_{ch}".format(ch = ich)
+            #tmpnEvents    = nTrueEntries / tmpnchs
+            #tmpFirstEvent = tmpnEvents * ich
+            #if (ich == tmpnchs - 1): tmpnEvents = nTrueEntries - tmpFirstEvent
+            #RunSamplePAF(selection, path, sample, year, xsec, ncores, tmpoutname, outpath, options, tmpnEvents, tmpFirstEvent, prefix, verbose, pretend, dotest, sendJobs, queue)
+            #if not sendJobs:
+              #ExecOrder("resetpaf")
+              #ExecOrder("sleep 3s")
+        #else:
+          #if verbose: print " >> We only are going to produce the chunk with index {chk}.".format(chk = str(fixedchunk))
+          #tmpoutname    = outname + "_{ch}".format(ch = fixedchunk)
+          #tmpnEvents    = nTrueEntries / tmpnchs
+          #tmpFirstEvent = tmpnEvents * fixedchunk
+          #if (fixedchunk == tmpnchs - 1): tmpnEvents = nTrueEntries - tmpFirstEvent
+          #RunSamplePAF(selection, path, sample, year, xsec, ncores, tmpoutname, outpath, options, tmpnEvents, tmpFirstEvent, prefix, verbose, pretend, dotest, sendJobs, queue)
+
+      #else:
+        #RunSamplePAF(selection, path, sample, year, xsec, ncores, outname, outpath, options, nEvents, FirstEvent, prefix, verbose, pretend, dotest, sendJobs, queue)
   else: # no config file...
     RunSamplePAF(selection, path, sample, year, xsec, nSlots, outname, outpath, options, nEvents, FirstEvent, prefix, verbose, pretend, dotest, sendJobs, queue)
 
