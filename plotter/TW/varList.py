@@ -1563,6 +1563,21 @@ varList['NBJetsuncertainties'] = {
     'yaxis'       : 'Relative uncertainty (adim.)'
 }
 
+varList['MET'] = {
+    'xaxis'       : 'Number of b-tagged jets',
+    'yaxis'       : 'd#sigma (pb)',
+    'genbinning'  : [0, 1.5, 3.5, 200],
+    'recobinning' : [0, 0.5, 1.5, 2.5, 3.5, 200],
+    'legpos'      : (0.7, 0.55, 0.90, 0.93),
+    'legposdesc'  : (0.7, 0.55, 0.90, 0.93),
+    'var'         : 'TMET',
+    'var_response': 'MET',
+    'var_gen'     : 'TDressMET',
+}
+varList['METuncertainties'] = {
+    'xaxis'       : varList['MET']['xaxis'],
+    'yaxis'       : 'Relative uncertainty (adim.)'
+}
 
 
 varList['NJetsNBJets'] = {
