@@ -20,15 +20,15 @@ const TString prefix = "Tree_"; const TString sufix = ".root";
 const TString DefaultTreeName = "MiniTree";
 
 
-class Histo : public TH1D{
+class Histo : public TH1D {
  public:
   Bool_t doStackOverflow = true;
 
   Histo();
   Histo(const char *name, const char *title, Int_t nbins, Double_t xlow, Double_t xup);
-  Histo(const char *name, const char *title, Int_t nbins, Float_t* bins);
-  //Histo(const char *name, const char *title, Int_t nbins, const Float_t* xbins);
- Histo(const TH1D &h, Int_t tipo = 0, Int_t c = 1): tag(""), process(""){
+  Histo(const char *name, const char *title, Int_t nbins, Double_t* bins);
+
+  Histo(const TH1D &h, Int_t tipo = 0, Int_t c = 1): tag(""), process("") {
     ((Histo&)h).Copy(*this);
     cuts = "cut"; xlabel = "[GeV]"; sysNorm = 0.25;
     SysTag = "";
@@ -36,11 +36,11 @@ class Histo : public TH1D{
     SetColor(c);
     SetStyle();
   }
-  ~Histo(){
+  ~Histo() {
     //if(vsysd) delete vsysd;
     //if(vsysu) delete vsysu;
   };
-  void Init(){ 
+  void Init() {
     type = 0; color = 0; SysTag = "0";
     tag = "0"; process="0"; cuts="0"; xlabel="0";
     DrawStyle = "";
@@ -56,17 +56,17 @@ class Histo : public TH1D{
 
   TString GetTag(){return tag;}
   Int_t GetType(){return type;}
-  Float_t GetYield(){return yield;}
-  Float_t GetMax(){return max;}
+  Double_t GetYield(){return yield;}
+  Double_t GetMax(){return max;}
   TString GetProcess(){return process;}
-  Float_t GetSysNorm(){return sysNorm;}
+  Double_t GetSysNorm(){return sysNorm;}
   Int_t GetColor(){ return color;}
   void StackOverflow();
   void SetTag(TString p, TString t="", TString x = "", TString c = "");
   void SetProcess(TString p);
   void SetTitles(TString x, TString c = "");
   void SetParams(Int_t tipo = 0, Int_t color = 1, Float_t s = 0.25, TString t = "", TString x = "", TString c = "");
-  void SetSysNorm(Float_t s){ sysNorm = s;}
+  void SetSysNorm(Double_t s){ sysNorm = s;}
   void SetSysTag(TString s){ SysTag = s;}
   TString GetSysTag(){return SysTag;}
   
@@ -78,19 +78,19 @@ class Histo : public TH1D{
   TString GetDrawStyle(){ return DrawStyle;}
   void GetEnvelope(vector<Histo*> v, Int_t dir = 1) ;
   
-  Float_t *vsysu = NULL; 
-  Float_t *vsysd = NULL;
+  Double_t *vsysu = NULL;
+  Double_t *vsysd = NULL;
 
 
  protected:
-  Int_t type; 
+  Int_t type;
   TString DrawStyle;
   Int_t color;
   TString tag = "0"; TString process="0"; TString cuts="0"; TString xlabel="0";
-  Float_t sysNorm;
+  Double_t sysNorm;
   Double_t yield;
   Double_t max;
-  Float_t haveStyle = 0;
+  Float_t  haveStyle = 0;
   Bool_t IsStackOverflow = true;
   TString SysTag = "0";
 

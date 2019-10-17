@@ -5,7 +5,7 @@
 #include"PDFunc.C"
 
 
-Plot* PlotToPyC(TString variable, TString cuts = "", TString channel = "ElMu", Int_t nbins = 0, Float_t* bins = 0, TString tit = "title", TString xtit = "VAR"){
+Plot* PlotToPyC(TString variable, TString cuts = "", TString channel = "ElMu", Int_t nbins = 0, Double_t* bins = 0, TString tit = "title", TString xtit = "VAR"){
   return new Plot(variable, cuts, channel, nbins, bins, tit, xtit);
 }
 

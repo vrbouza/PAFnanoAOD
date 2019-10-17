@@ -7,61 +7,61 @@
 enum ETResultsTableOutputFormat {kPlain, kLaTeX, kHTML, kCSV};
 Int_t iColor = 0;
 
-TString KeepAllErrorDecimals(Float_t number, Float_t error = 0);
-TString KeepOneDecimal(Float_t number, Float_t error = 0);
+TString KeepAllErrorDecimals(Double_t number, Double_t error = 0);
+TString KeepOneDecimal(Double_t number, Double_t error = 0);
 
 class TResultsTableContent {
  public:
-  //TResultsTableContent(double content = 0) {fContent = content; fError = 0; fStatError = 0;}
-  TResultsTableContent(double content = 0) {fContent = content; fError = 0; fStatError = 0; fString = ""; activate = true;}
+  //TResultsTableContent(Double_t content = 0) {fContent = content; fError = 0; fStatError = 0;}
+  TResultsTableContent(Double_t content = 0) {fContent = content; fError = 0; fStatError = 0; fString = ""; activate = true;}
 
-  double Content() const {return fContent;}
-  double& Content() {return fContent;}
-  double Error() const {return fError;}
-  double& Error() {return fError;}
-  double StatError() const {return fStatError;}
-  double& StatError() {return fStatError;}
+  Double_t Content() const {return fContent;}
+  Double_t& Content() {return fContent;}
+  Double_t Error() const {return fError;}
+  Double_t& Error() {return fError;}
+  Double_t StatError() const {return fStatError;}
+  Double_t& StatError() {return fStatError;}
   TString& String() { return fString;}
 
-  void SetContent(double c) {fContent = c;}
-  void SetError(double e) {fError = e;}
-  void SetStatError(double e) {fStatError = e;}
+  void SetContent(Double_t c) {fContent = c;}
+  void SetError(Double_t e) {fError = e;}
+  void SetStatError(Double_t e) {fStatError = e;}
   void SetString(TString t){ fString = t;}
-  void Activate(bool d = true){ activate = d;}
+  void Activate(Bool_t d = true){ activate = d;}
 
-  operator double() const {return fContent;}
-  operator double() {return fContent;}
+  operator Double_t() const {return fContent;}
+  operator Double_t() {return fContent;}
 
  protected:
-  double fContent;
-  double fError;
-  double fStatError;
+  Double_t fContent;
+  Double_t fError;
+  Double_t fStatError;
   TString fString;
-  bool activate;
+  Bool_t activate;
 };
 
 class TResultsTableRow {
  public:
-  TResultsTableRow(unsigned int ncol=0);
+  TResultsTableRow(UInt_t ncol=0);
   ~TResultsTableRow() {if (fRow) delete[] fRow;}
 
-  TResultsTableContent& operator[](unsigned int i) {return fRow[i];}
-  TResultsTableContent  operator[](unsigned int i) const {return fRow[i];}
+  TResultsTableContent& operator[](UInt_t i) {return fRow[i];}
+  TResultsTableContent  operator[](UInt_t i) const {return fRow[i];}
 
   
 
-  unsigned int GetNColumns() const {return fNColumns;}
-  void SetNColumns(unsigned int ncols);
+  UInt_t GetNColumns() const {return fNColumns;}
+  void SetNColumns(UInt_t ncols);
 
  protected:
   TResultsTableContent*  fRow;
-  unsigned int fNColumns;
+  UInt_t fNColumns;
 };
 
 
 class TResultsTable {
  public:
-  TResultsTable(unsigned int nrows, unsigned int ncols, Int_t witherrors = 0);
+  TResultsTable(UInt_t nrows, UInt_t ncols, Int_t witherrors = 0);
   ~TResultsTable() {if (fRows) delete[] fRows;}
 
   ////////////////////////////////////////////////////////////////////////////
@@ -73,8 +73,8 @@ class TResultsTable {
   // + sometable[i][j].Content() is equivalente to the previous line
   // + sometable[i][j].Error() will return the error stored in cell_ij
   //
-  TResultsTableRow& operator[](unsigned int i) {return fRows[i];}
-  TResultsTableRow  operator[](unsigned int i) const {return fRows[i];}
+  TResultsTableRow& operator[](UInt_t i) {return fRows[i];}
+  TResultsTableRow  operator[](UInt_t i) const {return fRows[i];}
   //
   ////////////////////////////////////////////////////////////////////////////
 
@@ -85,10 +85,10 @@ class TResultsTable {
 
   // Set it to true if your want all lines to be drawn (horizontal or vertical)
   // Default value is false
-  void SetDrawHLines(bool draw = false) {fDrawHLines = draw;}
-  void SetDrawVLines(bool draw = false) {fDrawVLines = draw;}
+  void SetDrawHLines(Bool_t draw = false) {fDrawHLines = draw;}
+  void SetDrawVLines(Bool_t draw = false) {fDrawVLines = draw;}
   // Set the width of each content column
-  void SetPlainTextColumnWidth(unsigned int w) {fColumnWidth = w;}
+  void SetPlainTextColumnWidth(UInt_t w) {fColumnWidth = w;}
   //
   ////////////////////////////////////////////////////////////////////////////
 
@@ -106,18 +106,18 @@ class TResultsTable {
   //
   // Some getters and setters
   //
-  void SetContent(unsigned int i, unsigned int j, double value) {fRows[i][j] = value;}
-  void SetRowTitle(unsigned int i, TString title) {fRowTitle[i] = title;}
-  void SetColumnTitle(unsigned int j, TString title) {fColumnTitle[j] = title;}
+  void SetContent(UInt_t i, UInt_t j, Double_t value) {fRows[i][j] = value;}
+  void SetRowTitle(UInt_t i, TString title) {fRowTitle[i] = title;}
+  void SetColumnTitle(UInt_t j, TString title) {fColumnTitle[j] = title;}
   void SetRowTitleHeader(const char* str) { fRowTitleHeader = str;}
  
 
-  unsigned int GetNColumns() const { return fNColumns;}
-  unsigned int GetNRows() const { return fNRows;}
+  UInt_t GetNColumns() const { return fNColumns;}
+  UInt_t GetNRows() const { return fNRows;}
 
-  double GetContent(unsigned int i, unsigned int j) const {return fRows[i][j];}
-  TString GetRowTitle(unsigned int i) const {return fRowTitle[i];}
-  TString GetColumnTitle(unsigned int j) const {return fColumnTitle[j];}
+  Double_t GetContent(UInt_t i, UInt_t j) const {return fRows[i][j];}
+  TString GetRowTitle(UInt_t i) const {return fRowTitle[i];}
+  TString GetColumnTitle(UInt_t j) const {return fColumnTitle[j];}
   TString GetRowTitleHeader() const { return fRowTitleHeader;}
   //
   ////////////////////////////////////////////////////////////////////////////
@@ -127,11 +127,11 @@ class TResultsTable {
   TString getCellColor(Int_t col) const;
 
  protected:
-  TString FixWidth(const TString& s, unsigned int width=11, bool prepend = true) const;
+  TString FixWidth(const TString& s, UInt_t width=11, Bool_t prepend = true) const;
 
   TString formatNum;
-  unsigned int fNColumns; //Number of columns
-  unsigned int fNRows;    //Number of rows
+  UInt_t fNColumns; //Number of columns
+  UInt_t fNRows;    //Number of rows
 
   TString colorRow[20] = {"#0099cc", "#ff9966", "#99ff99", "#ff66ff", "#99cc00", "#0099cc", "#ff9966", "#99ff99", "#ff66ff", "#99cc00", "#0099cc", "#ff9966", "#99ff99", "#ff66ff", "#99cc00", "#0099cc", "#ff9966", "#99ff99", "#ff66ff", "#99cc00"};
   TString color[20]    = {"#ccffff", "#ffffcc", "#ccffcc", "#ffccff", "#ccff99", "#ccffff", "#ffffcc", "#ccffcc", "#ffccff", "#ccff99", "#ccffff", "#ffffcc", "#ccffcc", "#ffccff", "#ccff99", "#ccffff", "#ffffcc", "#ccffcc", "#ffccff", "#ccff99"};
@@ -148,9 +148,9 @@ class TResultsTable {
   TString*    fColumnTitle; //Each columnt title
 
   //Options
-  bool fDrawHLines;
-  bool fDrawVLines;
-  unsigned int fColumnWidth;
+  Bool_t fDrawHLines;
+  Bool_t fDrawVLines;
+  UInt_t fColumnWidth;
 };
 
 

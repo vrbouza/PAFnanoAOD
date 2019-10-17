@@ -18,12 +18,13 @@
 #include "PlotterFunctions.C"
 
 enum eChannel{iNoChannel, iElMu, iMuon, iElec, i2lss, iTriLep, iFourLep, iSS1tau, iOS1tau, i2lss_fake, iTriLep_fake, iElEl, iMuMu, i1Tau_emufakeOS ,i1Tau_emufakeSS, i2LOS, TotalDefinedChannels};
-std::vector<TString> TStringToVector(TString t, char separator = ',');
-std::vector<float> TStringToFloat(TString t, char separator = ',', float scale = 1);
+std::vector<TString>  TStringToVector(TString t, char separator = ',');
+std::vector<Float_t>  TStringToFloat(TString t,  char separator = ',', Double_t scale = 1);
+std::vector<Double_t> TStringToDouble(TString t, char separator = ',', Double_t scale = 1);
 void PrintVector(std::vector<TString> v);
-void PrintVector(std::vector<Float_t> v);
+void PrintVector(std::vector<Double_t> v);
 
-Histo* GetHisto(TString path, TString samplename, TString treeName = "tree", TString var = "", TString cut = "", TString chan = "TChannel > 0", TString weight = "TWeight", TString sys = "", Int_t nbins = 1, Float_t bin0 = 0, Float_t binN = 1, Float_t *bins = nullptr, TString options = "");
+Histo* GetHisto(TString path, TString samplename, TString treeName = "tree", TString var = "", TString cut = "", TString chan = "TChannel > 0", TString weight = "TWeight", TString sys = "", Int_t nbins = 1, Double_t bin0 = 0, Double_t binN = 1, Double_t *bins = nullptr, TString options = "");
 std::vector<TString> GetAllVars(TString varstring, Bool_t verbose = false); 
 TString CraftFormula(TString cut, TString chan, TString sys, TString weight, TTree* tree, TString options = "");
 TString CraftVar(TString varstring, TString sys, TTree* tree);
@@ -31,12 +32,12 @@ TTreeFormula *GetFormula(TString name, TString var, TTree* tree);
 TTree* loadTree(TString path, TString sampleName, TString treeName);
 TH1D* loadHistogram1D(TString path, TString sampleName, TString histoName);
 TH1D* loadHistogram1F(TString path, TString sampleName, TString histoName);
-Histo* GetHistoFromHeppyTrees(TString path, TString sample, TString var, TString cut, TString hName, Int_t nbins, Float_t bin0, Float_t binN, Float_t *bins = nullptr);
+Histo* GetHistoFromHeppyTrees(TString path, TString sample, TString var, TString cut, TString hName, Int_t nbins, Double_t bin0, Double_t binN, Double_t *bins = nullptr);
 TChain* GetChain(TString path, TString sample);
 
-class Looper{
+class Looper {
   public:
-    Looper(){
+    Looper() {
       verbose = false; weight = "TWeight";
       Hist = NULL; tree = NULL;
       FormulasCuts = NULL; FormulasVars = NULL;
@@ -44,120 +45,114 @@ class Looper{
       nbins = 1; bin0 = 0; binN = 0; var = ""; cut = ""; chan = "";
     };
 
-    Looper(TString pathToTree, TString NameOfTree, TString _var = "TMET", TString _cut = "1", TString _chan = "ElMu", Int_t nb = 30, Float_t b0 = 0, Float_t bN = 300){
-   verbose = false;
-   Hist = NULL; 
-   FormulasCuts = NULL;
-   FormulasVars = NULL;
-   tree = NULL;
-   path = pathToTree;
-   treeName = NameOfTree;
-   //loadTree();
-   nbins = nb;
-   bin0 = b0;
-   binN = bN;
-   var = _var;
-   cut = _cut;
-   chan = _chan;
+    Looper(TString pathToTree, TString NameOfTree, TString _var = "TMET", TString _cut = "1", TString _chan = "ElMu", Int_t nb = 30, Double_t b0 = 0, Double_t bN = 300) {
+      verbose          = false;
+      Hist             = NULL;
+      FormulasCuts     = NULL;
+      FormulasVars     = NULL;
+      tree             = NULL;
+      path             = pathToTree;
+      treeName         = NameOfTree;
+      nbins            = nb;
+      bin0             = b0;
+      binN             = bN;
+      var              = _var;
+      cut              = _cut;
+      chan             = _chan;
+      weight           = "TWeight";
+      pathToHeppyTrees = "/pool/ciencias/HeppyTreesSummer16/v2/";
+    }
+    Looper(TString pathToTree, TString NameOfTree, TString _var = "TMET", TString _cut = "1", TString _chan = "ElMu", Int_t nb = 30, Double_t* bins = 0) {
+      verbose          = false;
+      Hist             = NULL;
+      FormulasCuts     = NULL;
+      FormulasVars     = NULL;
+      tree             = NULL;
+      path             = pathToTree;
+      treeName         = NameOfTree;
+      nbins            = nb;
+      bin0             = 0;
+      binN             = 0;
+      vbins            = bins;
+      var              = _var;
+      cut              = _cut;
+      chan             = _chan;
+      weight           = "TWeight";
+      pathToHeppyTrees = "/pool/ciencias/HeppyTreesSummer16/v2/";
+    }
 
-   weight = "TWeight";
-
-   pathToHeppyTrees = "/pool/ciencias/HeppyTreesSummer16/v2/";
-  }  
-    Looper(TString pathToTree, TString NameOfTree, TString _var = "TMET", TString _cut = "1", TString _chan = "ElMu", Int_t nb = 30, Float_t* bins = 0){
-   verbose = false;
-   Hist = NULL; 
-   FormulasCuts = NULL;
-   FormulasVars = NULL;
-   tree = NULL;
-   path = pathToTree;
-   treeName = NameOfTree;
-   //loadTree();
-   nbins = nb;
-   bin0 = 0;
-   binN = 0;
-   vbins = bins;
-   var = _var;
-   cut = _cut;
-   chan = _chan;
-
-   weight = "TWeight";
-
-   pathToHeppyTrees = "/pool/ciencias/HeppyTreesSummer16/v2/";
-  } 
-
-   ~Looper(){
-		 delete tree->GetCurrentFile();
-     if(FormulasCuts) delete FormulasCuts;
-     if(FormulasVars) delete FormulasVars;
-     FRhistos.clear();
-     vvars.clear();
-     //if(Hist) delete Hist;
-   };
+    ~Looper() {
+      delete tree->GetCurrentFile();
+      if (FormulasCuts) delete FormulasCuts;
+      if (FormulasVars) delete FormulasVars;
+      FRhistos.clear();
+      vvars.clear();
+      //if(Hist) delete Hist;
+    };
 
 
-   void SetCut(    TString t){cut  = t;}
-   void SetVar(    TString t){var  = t;}
-   void SetChannel(TString t){chan = t;}
-   void SetChannel(Int_t i){
-     if(i == 0 || i == 1) chan = "ElMu";
-     else if(i == 2) chan = "Muon";
-     else if(i == 3) chan = "Elec";
-     else if(i == 4) chan = "SF";
-     else chan = "All";
-   }
-   Bool_t doISRweight = false;
-   Bool_t verbose;
-   Int_t numberInstance;
-   TString GetSampleName(){return sampleName;}
-   void SetSampleName(TString t){sampleName   = t;}
-   void SetHeppySampleName(TString t){HeppySampleName   = t;}
-	 void SetTreeName(  TString t){treeName     = t;}
-	 void SetPath(      TString t){path         = t;}
-   void SetWeight(    TString t){weight       = t;}
-   void SetVerbosity(Bool_t v){verbose = v;}
+  void SetCut(    TString t){cut  = t;}
+  void SetVar(    TString t){var  = t;}
+  void SetChannel(TString t){chan = t;}
+  void SetChannel(Int_t i) {
+    if      (i == 0 || i == 1) chan = "ElMu";
+    else if (i == 2)           chan = "Muon";
+    else if (i == 3)           chan = "Elec";
+    else if (i == 4)           chan = "SF";
+    else                       chan = "All";
+  }
+  Bool_t doISRweight = false;
+  Bool_t verbose;
+  Int_t numberInstance;
+  TString GetSampleName(){return sampleName;}
+  void SetSampleName(TString t){sampleName   = t;}
+  void SetHeppySampleName(TString t){HeppySampleName   = t;}
+  void SetTreeName(  TString t){treeName     = t;}
+  void SetPath(      TString t){path         = t;}
+  void SetWeight(    TString t){weight       = t;}
+  void SetVerbosity(Bool_t v){verbose = v;}
 
-   virtual Histo* GetHisto(TString sampleName, TString sys = "0");
+  virtual Histo* GetHisto(TString sampleName, TString sys = "0");
 
-	 virtual void CreateHisto(TString sys = "0"); 
-	 virtual void SetFormulas(TString sys = "0"); 
-   virtual void Loop(TString sys = "");
-   void SetOptions(TString p){options = p;}
+  virtual void CreateHisto(TString sys = "0");
+  virtual void SetFormulas(TString sys = "0");
+  virtual void Loop(TString sys = "");
+  void SetOptions(TString p){options = p;}
 
- // protected:
-   Histo* Hist;
-   TTreeFormula* FormulasCuts;
-   TTreeFormula* FormulasVars;
-   vector<TTreeFormula*> vvars;
-   vector<Int_t>         vinst;
-   Int_t   nVars;
-   Int_t   nbins;
-   Float_t bin0;
-   Float_t binN;
-   Float_t *vbins;
-   TString hname;
-   TString xtit;
-   TString stringcut; TString stringvar;
+// protected:
+  Histo* Hist;
+  TTreeFormula* FormulasCuts;
+  TTreeFormula* FormulasVars;
+  vector<TTreeFormula*> vvars;
+  vector<Int_t>         vinst;
+  Int_t   nVars;
+  Int_t   nbins;
+  Double_t bin0;
+  Double_t binN;
+  Double_t *vbins;
+  TString hname;
+  TString xtit;
+  TString stringcut; TString stringvar;
 
-   TString sys; // This has another dim!!!! 
+  TString sys; // This has another dim!!!!
 
-   Bool_t HistosCreated;
+  Bool_t HistosCreated;
 
-   TString pathToHeppyTrees;
-   TString path;
-   TString treeName;
-   TString cut; TString chan; TString var;
-   TString options = "";
-   TString sampleName;
-   TString HeppySampleName;
-   TString weight;
+  TString pathToHeppyTrees;
+  TString path;
+  TString treeName;
+  TString cut; TString chan; TString var;
+  TString options = "";
+  TString sampleName;
+  TString HeppySampleName;
+  TString weight;
 
-   TH2F* hWeights;
+  TH2F* hWeights;
 
-   void loadTree();
-   TTree* tree;
+  void loadTree();
+  TTree* tree;
 
-   std::vector<TH1D*> FRhistos;
+  std::vector<TH1D*> FRhistos;
 
 };
 
@@ -171,9 +166,9 @@ class Multilooper : public Looper{
   //>>> Constructor from Looper...
   public:
   Multilooper(){};
-  Multilooper(TString pathToTree, TString NameOfTree, TString _var, TString _cut, TString _chan, Int_t nb, Float_t b0, Float_t bN) : 
+  Multilooper(TString pathToTree, TString NameOfTree, TString _var, TString _cut, TString _chan, Int_t nb, Double_t b0, Double_t bN) :
     Looper(pathToTree, NameOfTree, _var, _cut, _chan, nb, b0, bN) {};
-  Multilooper(TString pathToTree, TString NameOfTree, TString _var, TString _cut, TString _chan, Int_t nb, Float_t* bins) : 
+  Multilooper(TString pathToTree, TString NameOfTree, TString _var, TString _cut, TString _chan, Int_t nb, Double_t* bins) :
     Looper(pathToTree, NameOfTree, _var, _cut, _chan, nb, bins){};
 
   //>>> Redefined methods
@@ -210,13 +205,13 @@ class Multilooper : public Looper{
 // HYPERLOOPER!!!!!
 //
 //
- 
+
 struct distribution{
   TString name;
   Int_t nbins;
-  Float_t bin0;
-  Float_t binN;
-  Float_t *bins;
+  Double_t bin0;
+  Double_t binN;
+  Double_t *bins;
   TString var;
   TString chan;
   TString cut;
@@ -229,38 +224,38 @@ struct distribution{
 };
 
 
- 
+
 
 class Hyperlooper : public Multilooper{
 public:
   // Constructor
   Hyperlooper(){
-   verbose = false;
-   tree = NULL;
-   treeName = "tree";
-   systematics = "";
-   weight = "TWeight";
-   path = "";
-   sampleName = "";
-   process = "";
-   sampleOptions = "";
-   syst = "";
-   weight = "";
-   color = 0; type = 0;
+  verbose = false;
+  tree = NULL;
+  treeName = "tree";
+  systematics = "";
+  weight = "TWeight";
+  path = "";
+  sampleName = "";
+  process = "";
+  sampleOptions = "";
+  syst = "";
+  weight = "";
+  color = 0; type = 0;
   }
   Hyperlooper(TString pathToTree, TString NameOfTree = "tree", TString samplename = "", TString pr = "", Int_t ty = 0, Int_t col = 0, TString Weight = "TWeight", TString sys = "", TString op = ""){
-   verbose = false;
-   tree = NULL;
-   path = pathToTree;
-   treeName = NameOfTree;
-   sampleName = samplename;
-   systematics = sys;
-   weight = Weight;
-   sampleOptions = op;
-   process = pr;
-   syst = sys;
-   weight = Weight;
-   color = col; type = ty;
+  verbose = false;
+  tree = NULL;
+  path = pathToTree;
+  treeName = NameOfTree;
+  sampleName = samplename;
+  systematics = sys;
+  weight = Weight;
+  sampleOptions = op;
+  process = pr;
+  syst = sys;
+  weight = Weight;
+  color = col; type = ty;
   }
 
   distribution GetDistribution(TString name){
@@ -270,13 +265,13 @@ public:
     return VDist.at(0);
   }
 
-  void AddDistribution(TString name, TString var, TString cut, TString chan, Int_t nbins, Float_t bin0, Float_t binN, Float_t *bins, TString options = "");
+  void AddDistribution(TString name, TString var, TString cut, TString chan, Int_t nbins, Double_t bin0, Double_t binN, Double_t *bins, TString options = "");
   void SetName(Int_t   iDist, TString Name){   VDist.at(iDist).name = Name;}
   //void SetWeight(Int_t iDist, TString Weight){ VDist.at(iDist).weight = Weight;}
   //void SetSys(Int_t    iDist, TString Sys){    VDist.at(iDist).sys = Sys;}
-  void SetBins(Int_t   iDist, Float_t *Bins){  VDist.at(iDist).bins = Bins;}
-  void SetBin0(Int_t   iDist, Float_t Bin0){   VDist.at(iDist).bin0 = Bin0;}
-  void SetBinN(Int_t   iDist, Float_t BinN){   VDist.at(iDist).binN = BinN;}
+  void SetBins(Int_t   iDist, Double_t *Bins){  VDist.at(iDist).bins = Bins;}
+  void SetBin0(Int_t   iDist, Double_t Bin0){   VDist.at(iDist).bin0 = Bin0;}
+  void SetBinN(Int_t   iDist, Double_t BinN){   VDist.at(iDist).binN = BinN;}
   void SetNBins(Int_t   iDist, Int_t Nbins){    VDist.at(iDist).nbins = Nbins;}
   void SetChan(Int_t    iDist, TString Chan){   VDist.at(iDist).chan = Chan;}
   void SetVar(Int_t     iDist, TString Var){    VDist.at(iDist).var = Var;}
@@ -286,9 +281,9 @@ public:
   void SetName(TString   name, TString Name){   Int_t i = GetPos(name); SetName(i, Name);}
   //void SetWeight(TString name, TString Weight){ Int_t i = GetPos(name); SetWeight(i, Weight);}
   //void SetSys(TString    name, TString Sys){    Int_t i = GetPos(name); SetSys(i, Sys);}
-  void SetBins(TString   name, Float_t *Bins){  Int_t i = GetPos(name); SetBins(i, Bins);}
-  void SetBin0(TString   name, Float_t Bin0){   Int_t i = GetPos(name); SetBin0(i, Bin0);}
-  void SetBinN(TString   name, Float_t BinN){   Int_t i = GetPos(name); SetBinN(i, BinN);}
+  void SetBins(TString   name, Double_t *Bins){  Int_t i = GetPos(name); SetBins(i, Bins);}
+  void SetBin0(TString   name, Double_t Bin0){   Int_t i = GetPos(name); SetBin0(i, Bin0);}
+  void SetBinN(TString   name, Double_t BinN){   Int_t i = GetPos(name); SetBinN(i, BinN);}
   void SetNBins(TString   name, Int_t Nbins){   Int_t i = GetPos(name); SetNBins(i, Nbins);}
   void SetChan(TString   name, TString Chan){   Int_t i = GetPos(name); SetChan(i, Chan);}
   void SetVar(TString    name, TString Var){    Int_t i = GetPos(name); SetVar(i, Var);}
@@ -319,7 +314,7 @@ public:
   void Fill();
   Histo* GetHisto(TString name, TString sys);
   Histo* GetHisto(TString name){ return GetHisto(name, "");};
-   
+
   // To avoid warnings...
   void CreateHisto(TString t){CreateHisto(t);};
   void SetFormulas(TString t){SetFormulas(t);};
@@ -399,7 +394,7 @@ vector<TString> GetAllFiles(TString path, TString  filename) {
     TObjArray* filesfound = result.Tokenize(TString('\n'));
     if (!filesfound) cerr << "ERROR: in GetAllFiles. Could not parse output while finding files" << endl;
     else {
-      for (int i = 0; i < filesfound->GetEntries(); i++) theFiles.push_back(filesfound->At(i)->GetName());
+      for (Int_t i = 0; i < filesfound->GetEntries(); i++) theFiles.push_back(filesfound->At(i)->GetName());
       filesfound->Clear();
       delete filesfound;
     }
@@ -423,13 +418,24 @@ std::vector<TString> TStringToVector(TString t, char separator){
   return v;
 }
 
-std::vector<float> TStringToFloat(TString t, char separator, float scale){
-  std::vector<float> v;
+
+std::vector<Float_t> TStringToFloat(TString t, char separator, Double_t scale){
+  std::vector<Float_t> v;
   std::vector<TString> vstring = TStringToVector(t, separator);
-  int size = vstring.size();
-  for(int i = 0; i < size; i++) v.push_back(vstring.at(i).Atof()*scale);
+  Int_t size = vstring.size();
+  for(Int_t i = 0; i < size; i++) v.push_back(vstring.at(i).Atof()*scale);
   return v;
 }
+
+
+std::vector<Double_t> TStringToDouble(TString t, char separator, Double_t scale){
+  std::vector<Double_t> v;
+  std::vector<TString> vstring = TStringToVector(t, separator);
+  Int_t size = vstring.size();
+  for(Int_t i = 0; i < size; i++) v.push_back(vstring.at(i).Atof()*scale);
+  return v;
+}
+
 
 void PrintVector(std::vector<TString> v){
   Int_t dim = v.size();
@@ -438,14 +444,14 @@ void PrintVector(std::vector<TString> v){
   cout << v.at(dim-1) << ")" << endl;
 }
 
-void PrintVector(std::vector<Float_t> v){
+void PrintVector(std::vector<Double_t> v){
   Int_t dim = v.size();
   cout << "[size = " << dim << "]: (";
   for(Int_t i = 0; i < dim-1; i++) cout << v.at(i) << ", ";
   cout << v.at(dim-1) << ")" << endl;
 }
 
-void PrintArray(Float_t *a, Int_t dim){
+void PrintArray(Double_t *a, Int_t dim){
   TString out;
   out = Form("[size = %i] [", dim);
   for(Int_t i = 0; i < dim-1; i++) out += Form("%g, ",a[i]); 
@@ -621,11 +627,11 @@ TTree* loadTree(TString path, TString sampleName, TString treeName){
   TString prefix = "Tree_"; TString sufix = ".root";
   TString totalname = path + prefix + sampleName + sufix;
   cout << "[loadTree]: Getting tree \"" << treeName << "\" in file " << totalname << endl;
-	TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(totalname);
-	if (!f || !f->IsOpen()) {
-		f = new TFile(totalname);
-	}
-	f->GetObject(treeName,t);
+  TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(totalname);
+  if (!f || !f->IsOpen()) {
+    f = new TFile(totalname);
+  }
+  f->GetObject(treeName,t);
   t->SetDirectory(0);
   //delete f;
   return t;
@@ -669,7 +675,7 @@ TChain* GetChain(TString path, TString sample){
     for(Int_t i = 1; i < nSamples; i++){
       cout << ">>> Sample: " << samples.at(i) << endl;
       tempFiles = GetAllFiles(path, samples.at(i));
-			Files.insert(Files.end(), (tempFiles).begin(), (tempFiles).end());
+      Files.insert(Files.end(), (tempFiles).begin(), (tempFiles).end());
     }
   }  
   else  Files = GetAllFiles(path, sample);
@@ -682,7 +688,8 @@ TChain* GetChain(TString path, TString sample){
   return t;
 }
 
-Histo* GetHistoFromHeppyTrees(TString path, TString sample, TString var, TString cut, TString hName, Int_t nbins, Float_t bin0, Float_t binN, Float_t *bins){
+
+Histo* GetHistoFromHeppyTrees(TString path, TString sample, TString var, TString cut, TString hName, Int_t nbins, Double_t bin0, Double_t binN, Double_t *bins){
   Histo* h; 
   if(bin0 == binN) h = new Histo(hName, hName, nbins, bins);
   else             h = new Histo(hName, hName, nbins, bin0, binN);
@@ -692,6 +699,7 @@ Histo* GetHistoFromHeppyTrees(TString path, TString sample, TString var, TString
   h->SetDirectory(0);
   return h;
 }
+
 
 Histo* LoadHistogram(TString pathToFile, TString name){
   if(!pathToFile.EndsWith(".root")) pathToFile += ".root";
@@ -704,7 +712,7 @@ Histo* LoadHistogram(TString pathToFile, TString name){
   return histo; 
 }
 
-bool ExistsHistoInFile(TString pathToTree, TString name){
+Bool_t ExistsHistoInFile(TString pathToTree, TString name){
   if(!pathToTree.EndsWith(".root")) pathToTree += ".root";
   TFile* f = TFile::Open(pathToTree); 
   if(!f) return false;

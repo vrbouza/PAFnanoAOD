@@ -1,5 +1,6 @@
 #include "Looper.h"
 
+
 void Looper::SetFormulas(TString systematic){
   if (verbose) cout << "[Looper::SetFormulas] Entering SetFormulas." << endl;
   if(FormulasCuts) delete FormulasCuts;
@@ -38,18 +39,19 @@ void Looper::SetFormulas(TString systematic){
 }
 
 
-void Looper::CreateHisto(TString sys){
-  if(Hist) delete Hist;
+void Looper::CreateHisto(TString sys) {
+  if (Hist) delete Hist;
   TString name = sampleName;
-  if(sys != "0") name += "_" + sys;
-  if(bin0 != binN) Hist = new Histo(TH1D(name,sampleName+"_"+sys+"_"+var, nbins, bin0, binN));
-  else             Hist = new Histo(TH1D(name,sampleName+"_"+sys+"_"+var, nbins, vbins));
+  if (sys != "0") name += "_" + sys;
+  if (bin0 != binN) Hist = new Histo(TH1D(name, sampleName + "_" + sys + "_" + var, nbins, bin0, binN));
+  else              Hist = new Histo(TH1D(name, sampleName + "_" + sys + "_" + var, nbins, vbins));
 }
 
-void Looper::Loop(TString sys){
+
+void Looper::Loop(TString sys) {
   if (verbose) cout << "[Looper::Loop] Entering Loop." << endl;
   Int_t nEntries = tree->GetEntries();
-  Float_t val = 0; Float_t w = 0;
+  Double_t val = 0; Double_t w = 0;
   Bool_t doAllInstances(false);
   if(options.Contains("AllInstances")){
     doAllInstances = true;
@@ -65,7 +67,10 @@ void Looper::Loop(TString sys){
 
     //>>> Getting values for weight and variable
     w = FormulasCuts->EvalInstance();
-
+    if (w == 0) {
+//       cout << "=======$=$=$==$=$=$$=$==$=$=$=$=$=$=$=" << endl;
+      continue;
+    }
     //>>> Fill the histogram with all the entries in an array
     if(nVars == 1 && doAllInstances){
       FormulasVars = vvars.at(0);
@@ -84,9 +89,11 @@ void Looper::Loop(TString sys){
       }
     }
   }
-  if (verbose) cout << "[Looper::Loop] Finished loop." << endl;
+  if (verbose) {
+    cout << "[Looper::Loop] Finished loop." << endl;
+    cout << "[Looper::Loop] Yields from the histogram: " << Hist->Integral() << "." << endl;
+  }
 }
-
 
 
 //=== Load the tree
@@ -104,11 +111,14 @@ void Looper::loadTree() {
 }
 
 
-
 //=== Workflow fot creating and filling the histogram...
 Histo* Looper::GetHisto(TString sample, TString sys) {
-  if (verbose) cout << "[Looper::GetHisto] Entering GetHisto." << endl;
-  SetSampleName(sample); 
+  if (verbose) {
+    cout << "[Looper::GetHisto] Entering GetHisto." << endl;
+    cout << "[Looper::GetHisto] Sample name: " << sample << ", systematic: " << sys << endl;
+  }
+
+  SetSampleName(sample);
   loadTree();
   CreateHisto(sys);
   SetFormulas(sys);
@@ -118,7 +128,7 @@ Histo* Looper::GetHisto(TString sample, TString sys) {
 
 
 //=== Magical function that obtains a simple plot from a minitree using Looper
-Histo* GetHisto(TString path, TString samplename, TString treeName, TString var, TString cut, TString chan, TString weight, TString sys, Int_t nbins, Float_t bin0, Float_t binN, Float_t *bins, TString options){
+Histo* GetHisto(TString path, TString samplename, TString treeName, TString var, TString cut, TString chan, TString weight, TString sys, Int_t nbins, Double_t bin0, Double_t binN, Double_t *bins, TString options){
   Looper* ah;
   if(bin0 != binN) ah = new Looper(path, treeName, var, cut, chan, nbins, bin0, binN);
   else             ah = new Looper(path, treeName, var, cut, chan, nbins, bins);
@@ -132,7 +142,8 @@ Histo* GetHisto(TString path, TString samplename, TString treeName, TString var,
   return h;
 }
 
-//Histo* GetHistoFromHeppy(TString path, TString samplename, TString var, TString cut, TString nbins, Float_t bin0, Float_t binN, Float_t *bins){
+
+//Histo* GetHistoFromHeppy(TString path, TString samplename, TString var, TString cut, TString nbins, Double_t bin0, Double_t binN, Double_t *bins){
 //  Histo *h;
 //  if(bin0 != binN) h = new Histo("histo", "title", nbins, bins);
 //  else             h = new Histo("histo", "title", nbins, bin0, binN); 
@@ -145,17 +156,17 @@ Histo* GetHisto(TString path, TString samplename, TString treeName, TString var,
 //
 // MULTILOOP!!
 //
-void Multilooper::CreateHisto(TString sys){
+void Multilooper::CreateHisto(TString sys) {
   Histo* h;
   TString name = sampleName;
-  if(bin0 != binN) h = new Histo(TH1D(sampleName+"_"+sys+"_"+var,sampleName+"_"+sys+"_"+var, nbins, bin0, binN));
-  else             h = new Histo(TH1D(sampleName+"_"+sys+"_"+var,sampleName+"_"+sys+"_"+var, nbins, vbins));
-  if(sys != "0" && sys != ""){
+  if (bin0 != binN) h = new Histo(TH1D(sampleName + "_" + sys + "_" + var, sampleName + "_" + sys + "_" + var, nbins, bin0, binN));
+  else              h = new Histo(TH1D(sampleName + "_" + sys + "_" + var, sampleName + "_" + sys + "_" + var, nbins, vbins));
+  if(sys != "0" && sys != "") {
     name += "_" + sys;
     h->SetType(itSys);
     h->SetSysTag(sys);
   }
-  else{
+  else {
     h->SetType(itBkg);
     h->SetSysTag("");
   }
@@ -164,7 +175,8 @@ void Multilooper::CreateHisto(TString sys){
   vHistos.push_back(h);
 }
 
-void Multilooper::SetFormulas(TString systematic){
+
+void Multilooper::SetFormulas(TString systematic) {
   TTreeFormula* FormulasCuts;
   
   //>>> Cut
@@ -191,27 +203,28 @@ void Multilooper::SetFormulas(TString systematic){
   vFormVars.push_back(FormulasVars);
 }
 
-void Multilooper::CreateHistosAndFormulas(){
+
+void Multilooper::CreateHistosAndFormulas() {
   TString sys; Int_t nSyst = systLabels.size();
   CreateHisto(""); SetFormulas("");
-  for(Int_t i = 0; i < nSyst; i++){
+  for (Int_t i = 0; i < nSyst; i++) {
     sys = systLabels.at(i);
-    if(!sys.EndsWith("Up") && !sys.EndsWith("Down")){
+    if (!sys.EndsWith("Up") && !sys.EndsWith("Down")){
       CreateHisto(sys + "Up");   SetFormulas(sys + "Up");
       CreateHisto(sys + "Down"); SetFormulas(sys + "Down");
     }
-    else{
+    else {
       CreateHisto(sys);
       SetFormulas(sys);
     }
-  } 
+  }
 }
 
 
 void Multilooper::Loop() {
   if (verbose) cout << "[Multilooper::Loop] Entering Loop." << endl;
   Int_t nEntries = tree->GetEntries();
-  Float_t val = 0; Float_t w = 0;
+  Double_t val = 0; Double_t w = 0;
   Int_t nHistos = 0;
   Bool_t doAllInstances(false);
   if(options.Contains("AllInstances")){
@@ -251,9 +264,9 @@ void Multilooper::Loop() {
 
 Histo* Multilooper::GetHisto(TString syst){
   Int_t nHistos = vHistos.size();
-  for(Int_t iH = 0; iH < nHistos; iH++){
+  for (Int_t iH = 0; iH < nHistos; iH++){
     Histo* h = vHistos.at(iH);
-    if(h->GetSysTag() == syst) return h;
+    if (h->GetSysTag() == syst) return h;
   }
   cout << "WARNING [Multilooper::GetHisto] Not found histo with syst tag: " << syst << endl;
   return vHistos.at(0);
@@ -261,7 +274,7 @@ Histo* Multilooper::GetHisto(TString syst){
 
 
 void Multilooper::Fill(){
-  if((Int_t) systLabels.size() == 0) cout << "WARNING [Multilooper::Fill] No systematics!! Looping for nominal..." << endl;
+  if ((Int_t) systLabels.size() == 0) cout << "WARNING [Multilooper::Fill] No systematics!! Looping for nominal..." << endl;
   if(sampleName == ""){
     cout << "ERROR [Multilooper::Fill] Please, give a valid sample name!!!" << endl;
     return;
@@ -282,7 +295,7 @@ Int_t Hyperlooper::GetPos(TString Name){
   return 0;
 }
 
-void Hyperlooper::AddDistribution(TString name, TString var, TString cut, TString chan, Int_t nbins, Float_t bin0, Float_t binN, Float_t *bins, TString op){
+void Hyperlooper::AddDistribution(TString name, TString var, TString cut, TString chan, Int_t nbins, Double_t bin0, Double_t binN, Double_t *bins, TString op){
   if(op == "") op = options;
   distribution d;
   d.name = name;
@@ -302,6 +315,7 @@ void Hyperlooper::AddDistribution(TString name, TString var, TString cut, TStrin
   VDist.push_back(d); 
 }
 
+
 void Hyperlooper::SetFormulas(Int_t pos, TString systematic){
   distribution d = VDist.at(pos); 
   TTreeFormula* FormulasCuts;
@@ -320,9 +334,10 @@ void Hyperlooper::SetFormulas(Int_t pos, TString systematic){
   FormulasVars = new TTreeFormula("Form_" + sampleName + "_" + systematic + "_var", stringvar, tree);
   VDist.at(pos).vf.push_back(FormulasCuts);
   VDist.at(pos).vv.push_back(FormulasVars);
-} 
+}
 
-void Hyperlooper::CreateHisto(Int_t pos, TString sys){
+
+void Hyperlooper::CreateHisto(Int_t pos, TString sys) {
   distribution d = VDist.at(pos); 
   Histo* h;
   TString name = sampleName;
@@ -341,6 +356,7 @@ void Hyperlooper::CreateHisto(Int_t pos, TString sys){
   h->SetTag(name);
   VDist.at(pos).vh.push_back(h);
 }
+
 
 void Hyperlooper::CreateHistosAndFormulas(Int_t  pos){
   vector<TString> VSyst = TStringToVector(syst);
@@ -361,15 +377,17 @@ void Hyperlooper::CreateHistosAndFormulas(Int_t  pos){
   }
 }
 
+
 void Hyperlooper::CreateDistributions(){
   Int_t nD = VDist.size();
   for(Int_t i = 0; i < nD; i++) CreateHistosAndFormulas(i);
   return;
 }
 
+
 void Hyperlooper::HyperLoop(){
   Int_t nEntries = tree->GetEntries();
-  Float_t val = 0; Float_t w = 0;
+  Double_t val = 0; Double_t w = 0;
   Int_t nHistos = 0; Int_t nDist = 0;
   Bool_t doAllInstances(false);
   if(options.Contains("AllInstances")){
@@ -411,6 +429,7 @@ void Hyperlooper::HyperLoop(){
     }
   }
 }
+
 
 void Hyperlooper::Fill(){
   if(sampleName == ""){

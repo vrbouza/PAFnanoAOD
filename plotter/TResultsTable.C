@@ -26,8 +26,8 @@ void TResultsTableRow::SetNColumns(unsigned int ncols) {
 ////////////////////////////////////////////////////////////////////////////////////////
 // TResultsTable
 TResultsTable::TResultsTable(unsigned int nrows, 
-			     unsigned int ncol,
-			     Int_t witherrors):
+          unsigned int ncol,
+          Int_t witherrors):
   fNColumns(ncol),
   fNRows(nrows),
   fWithErrors(witherrors),
@@ -264,35 +264,35 @@ TString TResultsTable::getCellColor(Int_t col) const{
   return out;
 }
 
-TString KeepAllErrorDecimals(Float_t number, Float_t error){
+TString KeepAllErrorDecimals(Double_t number, Double_t error){
   Int_t d = 6;
   TString f;
-  if(error == 0) f = Form("%1.6f", number);
-  else           f = Form("%1.6f", error);
+  if(error == 0) f = Form("%1.6lf", number);
+  else           f = Form("%1.6lf", error);
   for(Int_t i = f.Sizeof()-2; i > f.First('.'); i--){
     if(f[i] == '0') d--;
     else break;
   }
-  TString format = TString("%1.") + TString(Form("%i", d)) + TString("f");
+  TString format = TString("%1.") + TString(Form("%i", d)) + TString("lf");
   return Form(format, number);
 }
 
-TString KeepOneDecimal(Float_t number, Float_t error){
+TString KeepOneDecimal(Double_t number, Double_t error){
   if(number < 0.000001) return TString(Form("%g", number));
   Int_t d = 1;
   TString f;
   if     (error == 0){
-    if(number > 0) return(Form("%1.0f", number));
-    else f = Form("%1.6f", number);
+    if(number > 0) return(Form("%1.0lf", number));
+    else f = Form("%1.6lf", number);
   }
-  else if(error > 0.) return(Form("%1.0f", number));
-  else                f = Form("%1.6f", error);
+  else if(error > 0.) return(Form("%1.0lf", number));
+  else                f = Form("%1.6lf", error);
   for(Int_t i = f.First('.') +1; i < f.Sizeof(); i++){
     if(f[i] == '0') d++;
     else break;
   }
   if(d == 7) d = 0;
-  TString format = TString("%1.") + TString(Form("%i", d)) + TString("f");
+  TString format = TString("%1.") + TString(Form("%i", d)) + TString("lf");
   return Form(format, number);
 }
 
