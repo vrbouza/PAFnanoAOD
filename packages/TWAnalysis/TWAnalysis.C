@@ -71,8 +71,8 @@ void TWAnalysis::InsideLoop() {
   // Weights and SFs
   TWeight_normal   = GetParam<Double_t>("NormWeight");
 
-  TrigSF           = (Double_t)GetParam<Float_t>("TriggerSF");
-  TrigSFerr        = (Double_t)GetParam<Float_t>("TriggerSFerr");
+  TrigSF           = GetParam<Float_t>("TriggerSF");
+  TrigSFerr        = GetParam<Float_t>("TriggerSFerr");
 
   PUSF             = GetParam<Double_t>("PUSF");
   PUSF_Up          = GetParam<Double_t>("PUSF_Up");
@@ -99,6 +99,7 @@ void TWAnalysis::InsideLoop() {
   GetMETandGenMET();
 
   fhDummy->Fill(0.5);
+  //if (DressLeptons.size() < 2) return; // LO DE ANDREA
 
   // Particle level selection
   TPassMinDressSel = (DressNLeps >= 2) && (TDressLep1_Pt > 25) && (TDressLep2_Pt > 20) &&
@@ -533,53 +534,43 @@ void TWAnalysis::GetLeptonVariables() {
       TLep2_PhiJERUp    = selLeptons.at(1).Phi();
       TLep2_EtaJERUp    = selLeptons.at(1).Eta();
 
-    if (selLeptons.at(1).isMuon) {
-      TLepMuon_Pt          = selLeptons.at(1).Pt();
-      TLepMuon_E           = selLeptons.at(1).E();
-      TLepMuon_Phi         = selLeptons.at(1).Phi();
-      TLepMuon_Eta         = selLeptons.at(1).Eta();
-      TLepMuon_PtJESUp     = selLeptons.at(1).Pt();
-      TLepMuon_EJESUp      = selLeptons.at(1).E();
-      TLepMuon_PhiJESUp    = selLeptons.at(1).Phi();
-      TLepMuon_EtaJESUp    = selLeptons.at(1).Eta();
-      TLepMuon_PtJESDown   = selLeptons.at(1).Pt();
-      TLepMuon_EJESDown    = selLeptons.at(1).E();
-      TLepMuon_PhiJESDown  = selLeptons.at(1).Phi();
-      TLepMuon_EtaJESDown  = selLeptons.at(1).Eta();
-      TLepMuon_PtJERUp     = selLeptons.at(1).Pt();
-      TLepMuon_EJERUp      = selLeptons.at(1).E();
-      TLepMuon_PhiJERUp    = selLeptons.at(1).Phi();
-      TLepMuon_EtaJERUp    = selLeptons.at(1).Eta();
+      if (selLeptons.at(1).isMuon) {
+        TLepMuon_Pt          = selLeptons.at(1).Pt();
+        TLepMuon_E           = selLeptons.at(1).E();
+        TLepMuon_Phi         = selLeptons.at(1).Phi();
+        TLepMuon_Eta         = selLeptons.at(1).Eta();
+        TLepMuon_PtJESUp     = selLeptons.at(1).Pt();
+        TLepMuon_EJESUp      = selLeptons.at(1).E();
+        TLepMuon_PhiJESUp    = selLeptons.at(1).Phi();
+        TLepMuon_EtaJESUp    = selLeptons.at(1).Eta();
+        TLepMuon_PtJESDown   = selLeptons.at(1).Pt();
+        TLepMuon_EJESDown    = selLeptons.at(1).E();
+        TLepMuon_PhiJESDown  = selLeptons.at(1).Phi();
+        TLepMuon_EtaJESDown  = selLeptons.at(1).Eta();
+        TLepMuon_PtJERUp     = selLeptons.at(1).Pt();
+        TLepMuon_EJERUp      = selLeptons.at(1).E();
+        TLepMuon_PhiJERUp    = selLeptons.at(1).Phi();
+        TLepMuon_EtaJERUp    = selLeptons.at(1).Eta();
+      }
+      else {
+        TLepElec_Pt          = selLeptons.at(1).Pt();
+        TLepElec_E           = selLeptons.at(1).E();
+        TLepElec_Phi         = selLeptons.at(1).Phi();
+        TLepElec_Eta         = selLeptons.at(1).Eta();
+        TLepElec_PtJESUp     = selLeptons.at(1).Pt();
+        TLepElec_EJESUp      = selLeptons.at(1).E();
+        TLepElec_PhiJESUp    = selLeptons.at(1).Phi();
+        TLepElec_EtaJESUp    = selLeptons.at(1).Eta();
+        TLepElec_PtJESDown   = selLeptons.at(1).Pt();
+        TLepElec_EJESDown    = selLeptons.at(1).E();
+        TLepElec_PhiJESDown  = selLeptons.at(1).Phi();
+        TLepElec_EtaJESDown  = selLeptons.at(1).Eta();
+        TLepElec_PtJERUp     = selLeptons.at(1).Pt();
+        TLepElec_EJERUp      = selLeptons.at(1).E();
+        TLepElec_PhiJERUp    = selLeptons.at(1).Phi();
+        TLepElec_EtaJERUp    = selLeptons.at(1).Eta();
+      }
     }
-    else {
-      TLepElec_Pt          = selLeptons.at(1).Pt();
-      TLepElec_E           = selLeptons.at(1).E();
-      TLepElec_Phi         = selLeptons.at(1).Phi();
-      TLepElec_Eta         = selLeptons.at(1).Eta();
-      TLepElec_PtJESUp     = selLeptons.at(1).Pt();
-      TLepElec_EJESUp      = selLeptons.at(1).E();
-      TLepElec_PhiJESUp    = selLeptons.at(1).Phi();
-      TLepElec_EtaJESUp    = selLeptons.at(1).Eta();
-      TLepElec_PtJESDown   = selLeptons.at(1).Pt();
-      TLepElec_EJESDown    = selLeptons.at(1).E();
-      TLepElec_PhiJESDown  = selLeptons.at(1).Phi();
-      TLepElec_EtaJESDown  = selLeptons.at(1).Eta();
-      TLepElec_PtJERUp     = selLeptons.at(1).Pt();
-      TLepElec_EJERUp      = selLeptons.at(1).E();
-      TLepElec_PhiJERUp    = selLeptons.at(1).Phi();
-      TLepElec_EtaJERUp    = selLeptons.at(1).Eta();
-    }
-
-//       if      (selLeptons.at(0).isMuon && selLeptons.at(1).isElec) TChannel = iElMu;
-//       else if (selLeptons.at(0).isElec && selLeptons.at(1).isMuon) TChannel = iElMu;
-//       else if (selLeptons.at(0).isMuon && selLeptons.at(1).isMuon) TChannel = iMuon;
-//       else if (selLeptons.at(0).isElec && selLeptons.at(1).isElec) TChannel = iElec;
-//       TIsSS = (selLeptons.at(0).charge * selLeptons.at(1).charge) > 0;
-    }
-//     else {
-//       TChannel = -1;
-//       TIsSS    = false;
-//     }
   }
 }
 
@@ -786,9 +777,13 @@ void TWAnalysis::GetGenJetVariables() {
 
 
 void TWAnalysis::GetMETandGenMET() {
-  if (year == 2017) {
+  if      (year == 2017) {
     TMET        = Get<Float_t>("METFixEE2017_pt");
     TMET_Phi    = Get<Float_t>("METFixEE2017_phi");
+  }
+  else if (year == 2018) {
+    TMET        = Get<Float_t>("MET_pt_nom");
+    TMET_Phi    = Get<Float_t>("MET_phi_nom");
   }
   else {
     TMET        = Get<Float_t>("MET_pt");
@@ -1483,38 +1478,38 @@ void TWAnalysis::CalculateSFAndWeights() {
   }
   else {
     // SF calculations
-    lepSF = (Double_t)(selLeptons.at(0).GetSF( 0) * selLeptons.at(1).GetSF( 0));
+    lepSF = (selLeptons.at(0).GetSF( 0) * selLeptons.at(1).GetSF( 0));
     if (TChannel == iElec) {
-      ElecSF   = (Double_t)(selLeptons.at(0).GetSF( 0)*selLeptons.at(1).GetSF( 0));
-      ElecSFUp = (Double_t)(selLeptons.at(0).GetSF( 1)*selLeptons.at(1).GetSF( 1));
-      ElecSFDo = (Double_t)(selLeptons.at(0).GetSF(-1)*selLeptons.at(1).GetSF(-1));
+      ElecSF   = (selLeptons.at(0).GetSF( 0)*selLeptons.at(1).GetSF( 0));
+      ElecSFUp = (selLeptons.at(0).GetSF( 1)*selLeptons.at(1).GetSF( 1));
+      ElecSFDo = (selLeptons.at(0).GetSF(-1)*selLeptons.at(1).GetSF(-1));
       MuonSFUp = 1; MuonSFDo = 1; MuonSF = 1;
     }
     else if (TChannel == iMuon) {
-      MuonSFUp = (Double_t)(selLeptons.at(0).GetSF( 1)*selLeptons.at(1).GetSF( 1));
-      MuonSFDo = (Double_t)(selLeptons.at(0).GetSF(-1)*selLeptons.at(1).GetSF(-1));
+      MuonSFUp = (selLeptons.at(0).GetSF( 1)*selLeptons.at(1).GetSF( 1));
+      MuonSFDo = (selLeptons.at(0).GetSF(-1)*selLeptons.at(1).GetSF(-1));
       ElecSFUp = 1; ElecSFDo = 1; ElecSF = 1;
     }
     else {
       if(selLeptons.at(0).isMuon) {
-        MuonSF   *= (Double_t)selLeptons.at(0).GetSF( 0);
-        MuonSFUp *= (Double_t)selLeptons.at(0).GetSF( 1);
-        MuonSFDo *= (Double_t)selLeptons.at(0).GetSF(-1);
+        MuonSF   *= selLeptons.at(0).GetSF( 0);
+        MuonSFUp *= selLeptons.at(0).GetSF( 1);
+        MuonSFDo *= selLeptons.at(0).GetSF(-1);
       }
       else {
-        ElecSF   *= (Double_t)selLeptons.at(0).GetSF( 0);
-        ElecSFUp *= (Double_t)selLeptons.at(0).GetSF( 1);
-        ElecSFDo *= (Double_t)selLeptons.at(0).GetSF(-1);
+        ElecSF   *= selLeptons.at(0).GetSF( 0);
+        ElecSFUp *= selLeptons.at(0).GetSF( 1);
+        ElecSFDo *= selLeptons.at(0).GetSF(-1);
       }
       if (selLeptons.at(1).isMuon) {
-        MuonSF   *= (Double_t)selLeptons.at(1).GetSF( 0);
-        MuonSFUp *= (Double_t)selLeptons.at(1).GetSF( 1);
-        MuonSFDo *= (Double_t)selLeptons.at(1).GetSF(-1);
+        MuonSF   *= selLeptons.at(1).GetSF( 0);
+        MuonSFUp *= selLeptons.at(1).GetSF( 1);
+        MuonSFDo *= selLeptons.at(1).GetSF(-1);
       }
       else {
-        ElecSF   *= (Double_t)selLeptons.at(1).GetSF( 0);
-        ElecSFUp *= (Double_t)selLeptons.at(1).GetSF( 1);
-        ElecSFDo *= (Double_t)selLeptons.at(1).GetSF(-1);
+        ElecSF   *= selLeptons.at(1).GetSF( 0);
+        ElecSFUp *= selLeptons.at(1).GetSF( 1);
+        ElecSFDo *= selLeptons.at(1).GetSF(-1);
       }
     }
 

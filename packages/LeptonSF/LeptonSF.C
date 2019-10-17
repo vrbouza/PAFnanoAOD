@@ -46,7 +46,7 @@ LeptonSF::LeptonSF(TString path, Int_t year, TString options):
   fMuEGSF(0),// Trigger Elec-Muon
   fSingleMuonTrigSF(0),
   fSingleElecTrigSF(0)
-   {         
+   {
 
   era = -1;
   path_to_SF_histos = path;
@@ -66,7 +66,7 @@ LeptonSF::LeptonSF(TString path, Int_t year, TString options):
 
 
 
-void LeptonSF::loadHisto(Int_t iHisto, Int_t wp){
+void LeptonSF::loadHisto(Int_t iHisto, Int_t wp) {
   TString filename = ""; TString histoname = "";
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>> Muons 
   if(iHisto == iMuonReco){
@@ -335,10 +335,10 @@ void LeptonSF::loadHisto(Int_t iHisto, Int_t wp){
 }
 
 // Get global Lepton SF
-Float_t LeptonSF::GetLeptonSF(Float_t pt, Float_t ieta, Int_t type){
+Double_t LeptonSF::GetLeptonSF(Float_t pt, Float_t ieta, Int_t type) {
   Float_t eta = TMath::Abs(ieta);
   Int_t nSFs = loadedHistos.size();
-  Float_t SF = 1; Int_t id; Float_t pr = 1;
+  Double_t SF = 1; Int_t id; Double_t pr = 1;
   //if(type == 1) cout << "================================= new Elec! [pt,eta] = [" << pt << "," << eta << "]..." << endl;
   //if(type == 0) cout << "================================= new Muon! [pt,eta] = [" << pt << "," << eta << "]..." << endl;
   if (pt <= 20) pt = 20.01;
@@ -404,12 +404,13 @@ Float_t LeptonSF::GetLeptonSF(Float_t pt, Float_t ieta, Int_t type){
   return SF;
 }
 
+
 // Get global error for Lepton SF
-Float_t LeptonSF::GetLeptonSFerror(Float_t pt, Float_t ieta, Int_t type){
+Double_t LeptonSF::GetLeptonSFerror(Float_t pt, Float_t ieta, Int_t type) {
   Float_t eta = TMath::Abs(ieta);
   float t = 0;
   Int_t nSFs = loadedHistos.size();
-  Float_t err = 0; Int_t id;
+  Double_t err = 0; Int_t id;
 
   if (pt <= 20) pt = 20.01;
   for (Int_t i = 0; i < nSFs; i++) {

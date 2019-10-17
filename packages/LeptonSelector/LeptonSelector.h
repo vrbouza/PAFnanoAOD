@@ -42,8 +42,8 @@ class LeptonSelector : public PAFChainItemSelector{
     TString localPath;
 
     // Trigger     
-    Float_t TriggerSF;
-    Float_t TriggerSFerr;
+    Double_t TriggerSF;
+    Double_t TriggerSFerr;
 
     // FullSim/FastSim SF
     Float_t FSSF;

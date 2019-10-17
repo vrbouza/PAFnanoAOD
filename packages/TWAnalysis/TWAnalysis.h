@@ -197,7 +197,9 @@ class TWAnalysis : public PAFChainItemSelector{
     Double_t BtagSF;
     Double_t BtagSFBtagUp, BtagSFBtagDown;
     Double_t BtagSFMistagUp, BtagSFMistagDown;
-    Double_t TWeight, TWeight_normal;
+//     Double_t TWeight, TWeight_normal;
+    Double_t TWeight;
+    Float_t  TWeight_normal;
     Double_t TWeight_LepEffUp, TWeight_LepEffDown;
     Double_t TWeight_ElecEffUp, TWeight_ElecEffDown;
     Double_t TWeight_MuonEffUp, TWeight_MuonEffDown;

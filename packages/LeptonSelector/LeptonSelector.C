@@ -295,6 +295,7 @@ void LeptonSelector::InsideLoop(){
         }
       }
       else genLeptons.push_back(tL);
+      genLeptons.push_back(tL);
     }
   }
 

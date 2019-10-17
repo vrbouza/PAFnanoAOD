@@ -21,8 +21,8 @@ class LeptonSF {
   ~LeptonSF() {}
   void loadHisto(Int_t iHisto, Int_t wp = -1);
   Float_t GetTrackerMuonSF(Float_t eta);
-  Float_t GetLeptonSF(Float_t pt, Float_t ieta, Int_t type = 0);
-  Float_t GetLeptonSFerror(Float_t pt, Float_t ieta, Int_t type = 0);
+  Double_t GetLeptonSF(Float_t pt, Float_t ieta, Int_t type = 0);
+  Double_t GetLeptonSFerror(Float_t pt, Float_t ieta, Int_t type = 0);
   TGraphAsymmErrors* LoadTrackerMuonSF(const char* file, const char* histo);
   TString path_to_SF_histos;
   

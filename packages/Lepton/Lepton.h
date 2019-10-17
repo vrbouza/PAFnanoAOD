@@ -52,9 +52,9 @@ class Lepton : public TObject{
     Bool_t isElec;
     Bool_t isMuon;
     Bool_t isTau;
-    Float_t GetSF(Int_t sys = 0);
-    void SetSF(Float_t val);
-    void SetSFerr(Float_t val);
+    Double_t GetSF(Int_t sys = 0);
+    void SetSF(Double_t val);
+    void SetSFerr(Double_t val);
     void SetIso(Float_t val){ Iso = val;}
     void SetR9(Float_t val){ R9 = val;}
     void SetEnergyUnc(Float_t val){ EnergyUnc = val;}
